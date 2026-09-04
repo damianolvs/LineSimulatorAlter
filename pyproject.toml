@@ -1,0 +1,22 @@
+# pyproject.toml
+[project]
+name = "lineas-mt-alter"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "damianolvs",email = "damiangof2@gmail.com"}
+]
+requires-python = "^3.13"
+dependencies = [
+    "django (>=6.1.1,<7.0.0)",
+    "djangorestframework (>=3.18.0,<4.0.0)",
+    "django-cors-headers (>=4.9.0,<5.0.0)",
+    "django-environ (>=0.14.0,<0.15.0)"
+]
+
+[tool.poetry]
+package-mode = false
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

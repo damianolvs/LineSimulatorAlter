@@ -1,0 +1,30 @@
+# .gitignore
+# Python / Poetry
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+media/
+
+# Environment variables
+.env
+
+# Node / Frontend (para cuando llegue esa fase)
+node_modules/
+dist/
+frontend-web/node_modules/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# OSGeo4W / GDAL local config (si aplica)
+*.pth
