@@ -34,14 +34,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',  # Para PostGIS
 
     'rest_framework',
     'corsheaders',
 
-    # Local apps
     'apps.catalogo',
     'apps.proyectos',
 ]
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # debe ir primero
     'django.middleware.security.SecurityMiddleware',
@@ -76,16 +77,17 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 # ---------------------------------------------------------------------------
+# config/settings.py
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST', default='localhost'),
+        'PORT': env('DB_PORT', default='5432'),
     }
 }
-# Nota: aquí es donde en el Paso de PostGIS cambiaremos el ENGINE
-# a 'django.contrib.gis.db.backends.postgis' y agregaremos
-# NAME/USER/PASSWORD/HOST/PORT leídos desde env(). Por ahora se
-# deja en SQLite para no bloquear el resto del setup.
 
 # ---------------------------------------------------------------------------
 # Password validation
@@ -125,3 +127,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
+
+
+GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal313.dll'
+GEOS_LIBRARY_PATH = r'C:\OSGeo4W\bin\geos_c.dll'
