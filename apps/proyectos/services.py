@@ -114,3 +114,59 @@ def generar_postes_de_paso(tramo):
     Poste.objects.bulk_update(secuencia_final, ["orden"])
 
     return secuencia_final
+
+
+def resolver_layout_poste(poste):
+    """
+    Genera/actualiza los PosteComponente en modo AUTO de un poste, según su
+    EstructuraCFE. Nunca toca componentes en modo MANUAL — si el slot ya tiene
+    uno ajustado a mano, lo deja intacto.
+
+    Primera versión: solo cubre la estructura de paso estándar (poste 12m +
+    cruceta + 3 aisladores). Las reglas de otras estructuras se agregan después.
+    """
+    from apps.catalogo.models import ComponenteVisual, SlotAnclaje
+
+    from .models import PosteComponente
+
+    if not poste.estructura.es_paso_estandar:
+        return []  # aún no hay reglas definidas para otros tipos de estructura
+
+    cruceta = ComponenteVisual.objects.get(codigo="cruceta")
+    aislador = ComponenteVisual.objects.get(codigo="aislador_pin")
+
+    receta = [
+        ("cruceta_1", cruceta, 0),
+        ("aislador_izq", aislador, 1),
+        ("aislador_centro", aislador, 1),
+        ("aislador_der", aislador, 1),
+    ]
+
+    resultado = []
+    for codigo_slot, componente, orden_z in receta:
+        slot = SlotAnclaje.objects.get(codigo=codigo_slot)
+        existente = PosteComponente.objects.filter(poste=poste, slot=slot).first()
+
+        if existente is None:
+            instancia = PosteComponente.objects.create(
+                poste=poste,
+                componente_visual=componente,
+                slot=slot,
+                modo=PosteComponente.Modo.AUTO,
+                x=slot.x_local,
+                y=slot.y_local,
+                orden_z=orden_z,
+            )
+        elif existente.modo == PosteComponente.Modo.AUTO:
+            existente.componente_visual = componente
+            existente.x = slot.x_local
+            existente.y = slot.y_local
+            existente.orden_z = orden_z
+            existente.save()
+            instancia = existente
+        else:
+            instancia = existente  # modo MANUAL: el usuario ya lo ajustó, no se toca
+
+        resultado.append(instancia)
+
+    return resultado
