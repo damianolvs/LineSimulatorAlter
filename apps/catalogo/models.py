@@ -3,10 +3,13 @@ from django.db import models
 
 
 class EstructuraCFE(models.Model):
-    """Tipo de estructura normado por CFE (ej. TS, PS, TD, PD, DP, DA, RD, AD, AP, ENT_SUB)."""
     codigo = models.SlugField(max_length=20, unique=True)
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True)
+    es_paso_estandar = models.BooleanField(
+        default=False,
+        help_text="Marca esta estructura como la que usan los postes de paso generados automáticamente (según CFE: 12m, cruceta PT/PR, 3 aisladores de porcelana). Debe haber exactamente una."
+    )
 
     class Meta:
         verbose_name = "Estructura CFE"

@@ -21,10 +21,13 @@ class Proyecto(models.Model):
 
 
 class Tramo(models.Model):
-    """Un segmento de línea dentro de un proyecto, dibujado sobre el mapa."""
     proyecto = models.ForeignKey(Proyecto, related_name="tramos", on_delete=models.CASCADE)
     nombre = models.CharField(max_length=150, blank=True)
     geom = gis_models.LineStringField(srid=4326, null=True, blank=True)
+    vano_maximo = models.FloatField(
+        default=109.0,
+        help_text="Distancia máxima en metros entre postes consecutivos. Estándar CFE: 109 m, ajustable por proyecto."
+    )
 
     class Meta:
         verbose_name = "Tramo"

@@ -24,7 +24,7 @@ class ModuloMaterialInline(admin.TabularInline):
 
 @admin.register(EstructuraCFE)
 class EstructuraCFEAdmin(admin.ModelAdmin):
-    list_display = ("codigo", "nombre")
+    list_display = ("codigo", "nombre", "es_paso_estandar")
     search_fields = ("codigo", "nombre")
     inlines = [EstructuraCFEMaterialInline]
 
