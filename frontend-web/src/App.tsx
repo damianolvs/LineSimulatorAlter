@@ -8,6 +8,7 @@ import ProyectoVista from './pages/ProyectoVista'
 import ProyectoMateriales from './pages/ProyectoMateriales'
 import CatalogoGeneral from './pages/CatalogoGeneral'
 import Configuracion from './pages/Configuracion'
+import { PruebaSprites } from './pages/PruebaSprites'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/catalogo" element={<CatalogoGeneral />} />
         <Route path="/configuracion" element={<Configuracion />} />
       </Route>
+      <Route path="/prueba-sprites" element={<PruebaSprites />} />
     </Routes>
   )
 }

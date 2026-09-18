@@ -34,7 +34,7 @@ class Command(BaseCommand):
         )
         ComponenteVisual.objects.update_or_create(
             codigo="retenida_ancla",
-            defaults=dict(nombre="Retenida + ancla (8 m estándar)", ancho_px=156, alto_px=336, z_index=0),
+            defaults=dict(nombre="Retenida + ancla (8 m estándar)", ancho_px=30, alto_px=64, z_index=0),
         )
         ComponenteVisual.objects.update_or_create(
             codigo="riostra_secundaria",
