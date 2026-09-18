@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/classical-e9ab1ecb-23c8-45ad-8f3f-b413ddf7861c/styles.css">
+<script src="_ds/classical-e9ab1ecb-23c8-45ad-8f3f-b413ddf7861c/_ds_bundle.js"></script>
+<style>
+  body { background: #dedcda; }
+  .num { font-variant-numeric: tabular-nums; }
+  .tool:hover { background: color-mix(in srgb, #201f1d 6%, transparent); }
+  .toolsel { box-shadow: inset 0 0 0 1px var(--color-accent); color: var(--color-accent); background: color-mix(in srgb, #b68235 10%, transparent); }
+  a { color: var(--color-accent); }
+  a:hover { color: var(--color-accent-600); }
+</style>
+</helmet>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="metalV" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0" stop-color="#5c6064"/><stop offset="0.22" stop-color="#b9bdc1"/>
+  <stop offset="0.45" stop-color="#e6e8ea"/><stop offset="0.72" stop-color="#8f9398"/>
+  <stop offset="1" stop-color="#4e5256"/>
+</linearGradient>
+<linearGradient id="metalH" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#d9dcde"/><stop offset="0.4" stop-color="#9ea2a6"/>
+  <stop offset="1" stop-color="#55585c"/>
+</linearGradient>
+<linearGradient id="metalPole" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0" stop-color="#4a4d51"/><stop offset="0.18" stop-color="#a8acb0"/>
+  <stop offset="0.38" stop-color="#e9ebec"/><stop offset="0.62" stop-color="#a2a6aa"/>
+  <stop offset="0.85" stop-color="#63666a"/><stop offset="1" stop-color="#43464a"/>
+</linearGradient>
+<radialGradient id="glass" cx="0.35" cy="0.3" r="0.8">
+  <stop offset="0" stop-color="#f2efe8"/><stop offset="0.5" stop-color="#cfc8b6"/>
+  <stop offset="1" stop-color="#8e8878"/>
+</radialGradient>
+</defs></svg>
+
+<section style="display:flex;flex-wrap:wrap;gap:72px;max-width:1500px;padding:56px 40px;font-family:var(--font-body)">
+
+  <!-- ══════════ 1a — PROJECT DASHBOARD ══════════ -->
+  <div id="1a" style="display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;align-items:baseline;gap:14px">
+      <span style="font-family:var(--font-heading);font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#5f5c58">1a · Project Dashboard</span>
+      <span style="flex:1;height:1px;background:#c4c1be"></span>
+      <span class="num" style="font-size:11px;color:#807c78">1440 × 900</span>
+    </div>
+    <div style="width:1440px;height:900px;background:var(--color-bg);border:1px solid var(--color-divider);box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+
+      <div class="nav" style="padding:12px 24px;background:var(--color-neutral-100)">
+        <span class="nav-brand" style="display:flex;align-items:center;gap:10px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.6" stroke-linecap="round"><path d="M12 2v20"/><path d="M4 6h16"/><path d="M6 10h12"/><path d="M12 12 4 22"/><path d="m12 12 8 10"/></svg>
+          LineSimulatorAlter
+        </span>
+        <a href="#1a" aria-current="page">Proyectos</a>
+        <a href="#1a">Catálogo CFE</a>
+        <a href="#1a">Estructuras</a>
+        <a href="#1a">Equipo</a>
+        <span style="width:1px;height:20px;background:var(--color-divider)"></span>
+        <span style="display:flex;align-items:center;gap:8px;font-size:13px">
+          <span style="width:26px;height:26px;border-radius:50%;border:1px solid var(--color-accent);display:grid;place-items:center;font-family:var(--font-heading);font-size:12px;color:var(--color-accent-700)">RM</span>
+          Ing. R. Medina
+        </span>
+      </div>
+
+      <div style="flex:1;padding:28px 40px;display:flex;flex-direction:column;gap:20px;min-height:0">
+        <div style="display:flex;align-items:flex-end;gap:24px">
+          <div>
+            <h2 style="margin:0 0 2px">Proyectos</h2>
+            <div class="text-muted" style="font-size:13px">Líneas de distribución en media tensión · 13.8 kV / 34.5 kV</div>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:10px;align-items:center">
+            <div style="position:relative">
+              <svg style="position:absolute;left:9px;top:10px" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7d7979" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              <input class="input" style="width:230px;padding-left:28px" placeholder="Buscar proyecto o municipio">
+            </div>
+            <div class="seg">
+              <label class="seg-opt"><input type="radio" name="d-f" defaultChecked="{{ true }}">Todos</label>
+              <label class="seg-opt"><input type="radio" name="d-f">En diseño</label>
+              <label class="seg-opt"><input type="radio" name="d-f">Aprobados</label>
+            </div>
+            <button class="btn btn-primary">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+              Nuevo proyecto
+            </button>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+          <div class="card"><div class="card-kicker">Proyectos activos</div><div class="num" style="font-family:var(--font-heading);font-size:34px;line-height:1">12</div><div class="card-meta">3 en revisión CFE</div></div>
+          <div class="card"><div class="card-kicker">Postes planeados</div><div class="num" style="font-family:var(--font-heading);font-size:34px;line-height:1">486</div><div class="card-meta">últimos 90 días</div></div>
+          <div class="card"><div class="card-kicker">Kilómetros trazados</div><div class="num" style="font-family:var(--font-heading);font-size:34px;line-height:1">31.7</div><div class="card-meta">km de troncal y ramales</div></div>
+          <div class="card"><div class="card-kicker">BOM generados</div><div class="num" style="font-family:var(--font-heading);font-size:34px;line-height:1">28</div><div class="card-meta">9 exportados a PDF</div></div>
+        </div>
+
+        <div style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:var(--color-neutral-100);overflow:hidden">
+          <table class="table">
+            <thead><tr>
+              <th style="padding-left:18px;width:34%">Proyecto</th>
+              <th>Ubicación</th>
+              <th style="text-align:right">Longitud</th>
+              <th style="text-align:right">Postes</th>
+              <th>Tensión</th>
+              <th>Última edición</th>
+              <th>Estado</th>
+              <th style="width:44px"></th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td style="padding-left:18px"><div style="font-family:var(--font-heading);font-size:16px">Ramal Ejido San Isidro</div><div class="text-muted" style="font-size:11px">RPU 4412 · Exp. CFE-QRO-2609</div></td>
+                <td>Colón, Querétaro</td><td class="num" style="text-align:right">2.41 km</td><td class="num" style="text-align:right">34</td><td class="num">13.8 kV</td><td class="text-muted">hoy, 11:42</td>
+                <td><span class="tag tag-accent">En diseño</span></td>
+                <td><a href="#1b" style="text-decoration:none">›</a></td>
+              </tr>
+              <tr>
+                <td style="padding-left:18px"><div style="font-family:var(--font-heading);font-size:16px">Alimentador Parque Industrial Norte</div><div class="text-muted" style="font-size:11px">RPU 1180 · Exp. CFE-QRO-2571</div></td>
+                <td>El Marqués, Querétaro</td><td class="num" style="text-align:right">6.08 km</td><td class="num" style="text-align:right">82</td><td class="num">34.5 kV</td><td class="text-muted">ayer, 18:05</td>
+                <td><span class="tag tag-neutral">En revisión</span></td>
+                <td><a href="#1b" style="text-decoration:none">›</a></td>
+              </tr>
+              <tr>
+                <td style="padding-left:18px"><div style="font-family:var(--font-heading);font-size:16px">Electrificación Rancho Las Ánimas</div><div class="text-muted" style="font-size:11px">RPU 9032 · Exp. CFE-GTO-1144</div></td>
+                <td>Apaseo el Alto, Gto.</td><td class="num" style="text-align:right">1.14 km</td><td class="num" style="text-align:right">17</td><td class="num">13.8 kV</td><td class="text-muted">11 sep 2026</td>
+                <td><span class="tag tag-outline">Aprobado</span></td>
+                <td><a href="#1b" style="text-decoration:none">›</a></td>
+              </tr>
+              <tr>
+                <td style="padding-left:18px"><div style="font-family:var(--font-heading);font-size:16px">Libramiento Poniente — reubicación</div><div class="text-muted" style="font-size:11px">RPU 7741 · Exp. CFE-QRO-2488</div></td>
+                <td>Corregidora, Querétaro</td><td class="num" style="text-align:right">3.92 km</td><td class="num" style="text-align:right">51</td><td class="num">13.8 kV</td><td class="text-muted">8 sep 2026</td>
+                <td><span class="tag tag-accent">En diseño</span></td>
+                <td><a href="#1b" style="text-decoration:none">›</a></td>
+              </tr>
+              <tr>
+                <td style="padding-left:18px"><div style="font-family:var(--font-heading);font-size:16px">Derivación Bodegas Tequisquiapan</div><div class="text-muted" style="font-size:11px">RPU 2204 · Exp. CFE-QRO-2450</div></td>
+                <td>Tequisquiapan, Qro.</td><td class="num" style="text-align:right">0.86 km</td><td class="num" style="text-align:right">12</td><td class="num">13.8 kV</td><td class="text-muted">2 sep 2026</td>
+                <td><span class="tag tag-neutral">Entregado</span></td>
+                <td><a href="#1b" style="text-decoration:none">›</a></td>
+              </tr>
+              <tr>
+                <td style="padding-left:18px"><div style="font-family:var(--font-heading);font-size:16px">Red rural Santa Bárbara II</div><div class="text-muted" style="font-size:11px">RPU 5567 · Exp. CFE-SLP-0918</div></td>
+                <td>Villa de Reyes, S.L.P.</td><td class="num" style="text-align:right">4.63 km</td><td class="num" style="text-align:right">60</td><td class="num">34.5 kV</td><td class="text-muted">28 ago 2026</td>
+                <td><span class="tag tag-outline">Aprobado</span></td>
+                <td><a href="#1b" style="text-decoration:none">›</a></td>
+              </tr>
+              <tr>
+                <td style="padding-left:18px;border-bottom:0"><div style="font-family:var(--font-heading);font-size:16px">Acometida Invernaderos El Sauz</div><div class="text-muted" style="font-size:11px">RPU 3390 · Exp. CFE-QRO-2399</div></td>
+                <td style="border-bottom:0">Pedro Escobedo, Qro.</td><td class="num" style="text-align:right;border-bottom:0">0.42 km</td><td class="num" style="text-align:right;border-bottom:0">6</td><td class="num" style="border-bottom:0">13.8 kV</td><td class="text-muted" style="border-bottom:0">21 ago 2026</td>
+                <td style="border-bottom:0"><span class="tag tag-neutral">Archivado</span></td>
+                <td style="border-bottom:0"><a href="#1b" style="text-decoration:none">›</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="text-muted" style="font-size:12px;display:flex;gap:6px;align-items:center">Mostrando 7 de 12 proyectos · <a href="#1a">ver archivados</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ 1b — MAP EDITOR ══════════ -->
+  <div id="1b" style="display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;align-items:baseline;gap:14px">
+      <span style="font-family:var(--font-heading);font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#5f5c58">1b · Map Editor</span>
+      <span style="flex:1;height:1px;background:#c4c1be"></span>
+      <span class="num" style="font-size:11px;color:#807c78">1440 × 900</span>
+    </div>
+    <div style="width:1440px;height:900px;background:var(--color-bg);border:1px solid var(--color-divider);box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+
+      <div style="display:flex;align-items:center;gap:14px;padding:9px 18px;border-bottom:1px solid var(--color-divider);background:var(--color-neutral-100)">
+        <a href="#1a" style="display:flex;align-items:center;gap:6px;font-size:13px;text-decoration:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>Proyectos
+        </a>
+        <span style="width:1px;height:18px;background:var(--color-divider)"></span>
+        <span style="font-family:var(--font-heading);font-size:17px">Ramal Ejido San Isidro</span>
+        <span class="tag tag-accent">En diseño</span>
+        <span class="text-muted num" style="font-size:12px">13.8 kV · 34 postes · 2.41 km · guardado 11:42</span>
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button class="btn btn-secondary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 14v6h16v-6"/><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/></svg>Importar KML</button>
+          <button class="btn btn-secondary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M7 3v6h8"/></svg>Guardar</button>
+          <button class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>Generar BOM</button>
+        </div>
+      </div>
+
+      <div style="flex:1;display:flex;min-height:0">
+
+        <!-- tools -->
+        <div style="width:256px;flex:none;border-right:1px solid var(--color-divider);background:var(--color-neutral-100);display:flex;flex-direction:column;overflow:hidden">
+          <div style="padding:14px 16px 10px"><h6 style="margin:0">Herramientas</h6></div>
+          <div style="padding:0 10px;display:flex;flex-direction:column;gap:2px">
+            <div class="tool" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-md);font-size:13.5px;cursor:pointer">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M13 2 3 14h7l-1 8 11-13h-7z"/></svg>Seleccionar / mover
+            </div>
+            <div class="tool toolsel" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-md);font-size:13.5px;cursor:pointer">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="5" cy="19" r="2.4"/><circle cx="19" cy="5" r="2.4"/><path d="M7 17 17 7"/></svg>Trazar trayectoria
+              <span class="num text-muted" style="margin-left:auto;font-size:11px">L</span>
+            </div>
+            <div class="tool" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-md);font-size:13.5px;cursor:pointer">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 3v18"/><path d="M6 7h12"/><path d="M12 13 6 21"/><path d="m12 13 6 8"/></svg>Colocar poste
+              <span class="num text-muted" style="margin-left:auto;font-size:11px">P</span>
+            </div>
+            <div class="tool" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-md);font-size:13.5px;cursor:pointer">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 21 21 3"/><path d="M6 14l4 4"/><path d="M14 6l4 4"/></svg>Medir vano
+              <span class="num text-muted" style="margin-left:auto;font-size:11px">M</span>
+            </div>
+            <div class="tool" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-md);font-size:13.5px;cursor:pointer">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 22s8-6.2 8-12a8 8 0 1 0-16 0c0 5.8 8 12 8 12z"/><circle cx="12" cy="10" r="2.6"/></svg>Retenida / anclaje
+            </div>
+          </div>
+
+          <hr class="hr" style="margin:14px 16px">
+
+          <div style="padding:0 16px">
+            <h6 style="margin:0 0 8px">Estructura por defecto</h6>
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <label class="radio"><input type="radio" name="m-st" defaultChecked="{{ true }}"><span class="dot"></span>TS-3 · Suspensión tangente</label>
+              <label class="radio"><input type="radio" name="m-st"><span class="dot"></span>TR-3 · Remate / retenida</label>
+              <label class="radio"><input type="radio" name="m-st"><span class="dot"></span>TA-3 · Ángulo 5°–30°</label>
+              <label class="radio"><input type="radio" name="m-st"><span class="dot"></span>TD-3 · Doble circuito</label>
+            </div>
+            <div class="field" style="margin-top:14px">
+              <label>Vano nominal objetivo</label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input class="input num" value="70" style="width:72px">
+                <span class="text-muted" style="font-size:12px">m · CFE máx. 80 m</span>
+              </div>
+            </div>
+          </div>
+
+          <hr class="hr" style="margin:14px 16px">
+
+          <div style="padding:0 16px 16px">
+            <h6 style="margin:0 0 8px">Capas</h6>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" defaultChecked="{{ true }}" style="accent-color:#b68235">Imagen satelital</label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" defaultChecked="{{ true }}" style="accent-color:#b68235">Derecho de vía</label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" defaultChecked="{{ true }}" style="accent-color:#b68235">Etiquetas de vano</label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" style="accent-color:#b68235">Curvas de nivel</label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" style="accent-color:#b68235">Predios / parcelas</label>
+            </div>
+          </div>
+          <div style="margin-top:auto;padding:12px 16px;border-top:1px solid var(--color-divider)" class="text-muted num">
+            <span style="font-size:11px">20.7014° N, 100.3502° O · Esri World Imagery</span>
+          </div>
+        </div>
+
+        <!-- map -->
+        <div style="flex:1;position:relative;overflow:hidden;background:#3f4a3a;min-width:0">
+          <div style="position:absolute;inset:0;overflow:hidden">
+            <div style="position:absolute;left:0;top:-40px;width:1024px;height:1024px">
+              <img style="position:absolute;left:0;top:0;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28910/14498" alt="">
+              <img style="position:absolute;left:256px;top:0;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28910/14499" alt="">
+              <img style="position:absolute;left:512px;top:0;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28910/14500" alt="">
+              <img style="position:absolute;left:768px;top:0;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28910/14501" alt="">
+              <img style="position:absolute;left:0;top:256px;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28911/14498" alt="">
+              <img style="position:absolute;left:256px;top:256px;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28911/14499" alt="">
+              <img style="position:absolute;left:512px;top:256px;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28911/14500" alt="">
+              <img style="position:absolute;left:768px;top:256px;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28911/14501" alt="">
+              <img style="position:absolute;left:0;top:512px;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28912/14498" alt="">
+              <img style="position:absolute;left:256px;top:512px;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28912/14499" alt="">
+              <img style="position:absolute;left:512px;top:512px;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28912/14500" alt="">
+              <img style="position:absolute;left:768px;top:512px;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28912/14501" alt="">
+              <img style="position:absolute;left:0;top:768px;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28913/14498" alt="">
+              <img style="position:absolute;left:256px;top:768px;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28913/14499" alt="">
+              <img style="position:absolute;left:512px;top:768px;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28913/14500" alt="">
+              <img style="position:absolute;left:768px;top:768px;width:256px;height:256px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28913/14501" alt="">
+            </div>
+          </div>
+
+          <!-- trajectory -->
+          <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" viewBox="0 0 854 844" preserveAspectRatio="none">
+            <polyline points="60,700 135,630 210,560 305,515 400,470 500,400 600,330 695,240 790,150" fill="none" stroke="#1d1b18" stroke-opacity="0.55" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="60,700 135,630 210,560 305,515 400,470 500,400 600,330 695,240 790,150" fill="none" stroke="#f0e2c8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="60,700 135,630 210,560 305,515 400,470 500,400 600,330 695,240 790,150" fill="none" stroke="#b68235" stroke-width="2.4" stroke-dasharray="14 12" stroke-linecap="round"/>
+            <polyline points="88,724 163,654 238,584 333,539 428,494 528,424 628,354 723,264 818,174" fill="none" stroke="#f0e2c8" stroke-opacity="0.5" stroke-width="1" stroke-dasharray="4 6"/>
+            <polyline points="32,676 107,606 182,536 277,491 372,446 472,376 572,306 667,216 762,126" fill="none" stroke="#f0e2c8" stroke-opacity="0.5" stroke-width="1" stroke-dasharray="4 6"/>
+          </svg>
+
+          <!-- vano labels -->
+          <div class="num" style="position:absolute;left:83px;top:640px;transform:translate(-50%,-50%);background:rgba(25,23,20,.78);color:#f4ead8;font-size:10.5px;padding:2px 6px;border-radius:2px;letter-spacing:.02em">68 m</div>
+          <div class="num" style="position:absolute;left:160px;top:572px;transform:translate(-50%,-50%);background:rgba(25,23,20,.78);color:#f4ead8;font-size:10.5px;padding:2px 6px;border-radius:2px">71 m</div>
+          <div class="num" style="position:absolute;left:250px;top:526px;transform:translate(-50%,-50%);background:rgba(25,23,20,.78);color:#f4ead8;font-size:10.5px;padding:2px 6px;border-radius:2px">74 m</div>
+          <div class="num" style="position:absolute;left:345px;top:480px;transform:translate(-50%,-50%);background:rgba(182,130,53,.92);color:#1d1b18;font-size:10.5px;padding:2px 6px;border-radius:2px;font-weight:600">72 m</div>
+          <div class="num" style="position:absolute;left:445px;top:414px;transform:translate(-50%,-50%);background:rgba(182,130,53,.92);color:#1d1b18;font-size:10.5px;padding:2px 6px;border-radius:2px;font-weight:600">68 m</div>
+          <div class="num" style="position:absolute;left:545px;top:344px;transform:translate(-50%,-50%);background:rgba(25,23,20,.78);color:#f4ead8;font-size:10.5px;padding:2px 6px;border-radius:2px">70 m</div>
+          <div class="num" style="position:absolute;left:640px;top:265px;transform:translate(-50%,-50%);background:rgba(25,23,20,.78);color:#f4ead8;font-size:10.5px;padding:2px 6px;border-radius:2px">76 m</div>
+          <div class="num" style="position:absolute;left:735px;top:178px;transform:translate(-50%,-50%);background:rgba(25,23,20,.78);color:#f4ead8;font-size:10.5px;padding:2px 6px;border-radius:2px">73 m</div>
+
+          <!-- poles -->
+          <div style="position:absolute;left:60px;top:700px;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center">
+            <svg width="17" height="27" viewBox="0 0 17 27"><ellipse cx="8.5" cy="25.6" rx="5" ry="1.4" fill="#12100e" opacity=".5"/><rect x="7.2" y="3" width="2.6" height="22.4" fill="url(#metalV)" stroke="#2a2724" stroke-width=".5"/><rect x="1.6" y="5.2" width="13.8" height="2" rx=".5" fill="url(#metalH)" stroke="#2a2724" stroke-width=".5"/><circle cx="2.6" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="8.5" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="14.4" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><path d="M8.5 9 2 25" stroke="#d9d4c6" stroke-width=".7" opacity=".85"/></svg>
+            <span class="num" style="margin-top:2px;background:rgba(25,23,20,.8);color:#f4ead8;font-size:9.5px;padding:1px 4px;border-radius:2px">P-01</span>
+          </div>
+          <div style="position:absolute;left:135px;top:630px;transform:translate(-50%,-100%)">
+            <svg width="17" height="27" viewBox="0 0 17 27"><ellipse cx="8.5" cy="25.6" rx="5" ry="1.4" fill="#12100e" opacity=".5"/><rect x="7.2" y="3" width="2.6" height="22.4" fill="url(#metalV)" stroke="#2a2724" stroke-width=".5"/><rect x="1.6" y="5.2" width="13.8" height="2" rx=".5" fill="url(#metalH)" stroke="#2a2724" stroke-width=".5"/><circle cx="2.6" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="8.5" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="14.4" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/></svg>
+          </div>
+          <div style="position:absolute;left:210px;top:560px;transform:translate(-50%,-100%)">
+            <svg width="17" height="27" viewBox="0 0 17 27"><ellipse cx="8.5" cy="25.6" rx="5" ry="1.4" fill="#12100e" opacity=".5"/><rect x="7.2" y="3" width="2.6" height="22.4" fill="url(#metalV)" stroke="#2a2724" stroke-width=".5"/><rect x="1.6" y="5.2" width="13.8" height="2" rx=".5" fill="url(#metalH)" stroke="#2a2724" stroke-width=".5"/><circle cx="2.6" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="8.5" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="14.4" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/></svg>
+          </div>
+          <div style="position:absolute;left:305px;top:515px;transform:translate(-50%,-100%)">
+            <svg width="17" height="27" viewBox="0 0 17 27"><ellipse cx="8.5" cy="25.6" rx="5" ry="1.4" fill="#12100e" opacity=".5"/><rect x="7.2" y="3" width="2.6" height="22.4" fill="url(#metalV)" stroke="#2a2724" stroke-width=".5"/><rect x="1.6" y="5.2" width="13.8" height="2" rx=".5" fill="url(#metalH)" stroke="#2a2724" stroke-width=".5"/><circle cx="2.6" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="8.5" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="14.4" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/></svg>
+          </div>
+
+          <!-- selected pole P-05 -->
+          <div style="position:absolute;left:400px;top:470px;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center">
+            <div style="position:relative;display:grid;place-items:end center">
+              <span style="position:absolute;bottom:-9px;width:46px;height:46px;border-radius:50%;border:2px solid #b68235;background:rgba(182,130,53,.16);box-shadow:0 0 0 3px rgba(240,226,200,.35)"></span>
+              <span style="position:absolute;bottom:-3px;width:30px;height:12px;border-radius:50%;border:1px dashed rgba(240,226,200,.7)"></span>
+              <svg width="22" height="34" viewBox="0 0 17 27" style="position:relative"><ellipse cx="8.5" cy="25.6" rx="5" ry="1.4" fill="#12100e" opacity=".5"/><rect x="7.2" y="3" width="2.6" height="22.4" fill="url(#metalV)" stroke="#2a2724" stroke-width=".5"/><rect x="1.6" y="5.2" width="13.8" height="2" rx=".5" fill="url(#metalH)" stroke="#2a2724" stroke-width=".5"/><circle cx="2.6" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="8.5" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="14.4" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><path d="M8.5 9 2 25" stroke="#d9d4c6" stroke-width=".7" opacity=".85"/><path d="M8.5 9 15 25" stroke="#d9d4c6" stroke-width=".7" opacity=".85"/></svg>
+            </div>
+            <span class="num" style="margin-top:12px;background:#b68235;color:#1d1b18;font-size:10px;font-weight:600;padding:1px 5px;border-radius:2px">P-05 · TS-3</span>
+          </div>
+
+          <div style="position:absolute;left:500px;top:400px;transform:translate(-50%,-100%)">
+            <svg width="17" height="27" viewBox="0 0 17 27"><ellipse cx="8.5" cy="25.6" rx="5" ry="1.4" fill="#12100e" opacity=".5"/><rect x="7.2" y="3" width="2.6" height="22.4" fill="url(#metalV)" stroke="#2a2724" stroke-width=".5"/><rect x="1.6" y="5.2" width="13.8" height="2" rx=".5" fill="url(#metalH)" stroke="#2a2724" stroke-width=".5"/><circle cx="2.6" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="8.5" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="14.4" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/></svg>
+          </div>
+          <div style="position:absolute;left:600px;top:330px;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center">
+            <svg width="17" height="27" viewBox="0 0 17 27"><ellipse cx="8.5" cy="25.6" rx="5" ry="1.4" fill="#12100e" opacity=".5"/><rect x="7.2" y="3" width="2.6" height="22.4" fill="url(#metalV)" stroke="#2a2724" stroke-width=".5"/><rect x="1.6" y="5.2" width="13.8" height="2" rx=".5" fill="url(#metalH)" stroke="#2a2724" stroke-width=".5"/><circle cx="2.6" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="8.5" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="14.4" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><path d="M8.5 9 15 25" stroke="#d9d4c6" stroke-width=".7" opacity=".85"/></svg>
+            <span class="num" style="margin-top:2px;background:rgba(25,23,20,.8);color:#f4ead8;font-size:9.5px;padding:1px 4px;border-radius:2px">P-07 · TA-3</span>
+          </div>
+          <div style="position:absolute;left:695px;top:240px;transform:translate(-50%,-100%)">
+            <svg width="17" height="27" viewBox="0 0 17 27"><ellipse cx="8.5" cy="25.6" rx="5" ry="1.4" fill="#12100e" opacity=".5"/><rect x="7.2" y="3" width="2.6" height="22.4" fill="url(#metalV)" stroke="#2a2724" stroke-width=".5"/><rect x="1.6" y="5.2" width="13.8" height="2" rx=".5" fill="url(#metalH)" stroke="#2a2724" stroke-width=".5"/><circle cx="2.6" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="8.5" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="14.4" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/></svg>
+          </div>
+          <div style="position:absolute;left:790px;top:150px;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center">
+            <svg width="17" height="27" viewBox="0 0 17 27"><ellipse cx="8.5" cy="25.6" rx="5" ry="1.4" fill="#12100e" opacity=".5"/><rect x="7.2" y="3" width="2.6" height="22.4" fill="url(#metalV)" stroke="#2a2724" stroke-width=".5"/><rect x="1.6" y="5.2" width="13.8" height="2" rx=".5" fill="url(#metalH)" stroke="#2a2724" stroke-width=".5"/><circle cx="2.6" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="8.5" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="14.4" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><path d="M8.5 9 2 25" stroke="#d9d4c6" stroke-width=".7" opacity=".85"/></svg>
+            <span class="num" style="margin-top:2px;background:rgba(25,23,20,.8);color:#f4ead8;font-size:9.5px;padding:1px 4px;border-radius:2px">P-09 · TR-3</span>
+          </div>
+
+          <!-- map chrome -->
+          <div style="position:absolute;left:14px;top:14px;display:flex;flex-direction:column;background:rgba(243,242,242,.94);border:1px solid rgba(32,31,29,.25);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-sm)">
+            <span style="width:34px;height:32px;display:grid;place-items:center;font-size:17px;font-family:var(--font-heading);cursor:pointer">+</span>
+            <span style="width:34px;height:32px;display:grid;place-items:center;font-size:17px;font-family:var(--font-heading);border-top:1px solid var(--color-divider);cursor:pointer">−</span>
+          </div>
+          <div class="seg" style="position:absolute;right:14px;top:14px;background:rgba(243,242,242,.94);box-shadow:var(--shadow-sm)">
+            <label class="seg-opt"><input type="radio" name="m-base" defaultChecked="{{ true }}">Satélite</label>
+            <label class="seg-opt"><input type="radio" name="m-base">Híbrido</label>
+            <label class="seg-opt"><input type="radio" name="m-base">Topográfico</label>
+          </div>
+          <div style="position:absolute;left:14px;bottom:14px;display:flex;align-items:center;gap:10px;background:rgba(25,23,20,.72);padding:5px 10px;border-radius:2px;color:#f4ead8">
+            <span style="width:64px;height:1px;background:#f4ead8;position:relative;display:block"></span>
+            <span class="num" style="font-size:10.5px">100 m</span>
+          </div>
+        </div>
+
+        <!-- properties -->
+        <div style="width:330px;flex:none;border-left:1px solid var(--color-divider);background:var(--color-neutral-100);display:flex;flex-direction:column;overflow:hidden">
+          <div style="padding:14px 18px 12px;border-bottom:1px solid var(--color-divider);display:flex;align-items:center;gap:10px">
+            <svg width="20" height="30" viewBox="0 0 17 27"><rect x="7.2" y="3" width="2.6" height="22.4" fill="url(#metalV)" stroke="#2a2724" stroke-width=".5"/><rect x="1.6" y="5.2" width="13.8" height="2" rx=".5" fill="url(#metalH)" stroke="#2a2724" stroke-width=".5"/><circle cx="2.6" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="8.5" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/><circle cx="14.4" cy="4" r="1.5" fill="url(#glass)" stroke="#2a2724" stroke-width=".4"/></svg>
+            <div>
+              <div style="font-family:var(--font-heading);font-size:19px;line-height:1.1">Poste P-05</div>
+              <div class="text-muted num" style="font-size:11px">20.70182° N · 100.34871° O · 1 892 msnm</div>
+            </div>
+            <span class="tag tag-outline" style="margin-left:auto">Activo</span>
+          </div>
+
+          <div style="padding:16px 18px;display:flex;flex-direction:column;gap:16px;overflow:auto">
+            <div class="field">
+              <label>Tipo de estructura (CFE)</label>
+              <select class="input" style="appearance:none;background-image:none">
+                <option>TS-3 · Suspensión tangente, 3 fases</option>
+              </select>
+              <div class="text-muted" style="font-size:11px;margin-top:5px">Sugerida automáticamente: deflexión &lt; 5°</div>
+            </div>
+
+            <div>
+              <h6 style="margin:0 0 8px">Geometría del tramo</h6>
+              <table class="table" style="font-size:13px">
+                <tbody>
+                  <tr><td style="padding-left:0">Vano anterior (P-04)</td><td class="num" style="text-align:right;padding-right:0">72.4 m</td></tr>
+                  <tr><td style="padding-left:0">Vano siguiente (P-06)</td><td class="num" style="text-align:right;padding-right:0">68.1 m</td></tr>
+                  <tr><td style="padding-left:0">Ángulo de deflexión</td><td class="num" style="text-align:right;padding-right:0">3.8°</td></tr>
+                  <tr><td style="padding-left:0">Pendiente del terreno</td><td class="num" style="text-align:right;padding-right:0">4.1 %</td></tr>
+                  <tr><td style="padding-left:0;border-bottom:0">Flecha calculada</td><td class="num" style="text-align:right;padding-right:0;border-bottom:0">0.94 m</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div>
+              <h6 style="margin:0 0 8px">Poste</h6>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <div class="field"><label>Material</label><input class="input" value="Concreto PC" readonly></div>
+                <div class="field"><label>Altura / clase</label><input class="input num" value="12 m · 700 kg" readonly></div>
+              </div>
+            </div>
+
+            <div>
+              <h6 style="margin:0 0 8px">Herrajes asignados</h6>
+              <div style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+                <div style="display:flex;align-items:center;gap:8px;padding:6px 9px;border:1px solid var(--color-divider);border-radius:var(--radius-md)"><span>Cruceta de acero 2.0 m</span><span class="num text-muted" style="margin-left:auto">×1</span></div>
+                <div style="display:flex;align-items:center;gap:8px;padding:6px 9px;border:1px solid var(--color-divider);border-radius:var(--radius-md)"><span>Aislador polimérico pin 15 kV</span><span class="num text-muted" style="margin-left:auto">×3</span></div>
+                <div style="display:flex;align-items:center;gap:8px;padding:6px 9px;border:1px dashed var(--color-accent);border-radius:var(--radius-md);background:color-mix(in srgb, #b68235 7%, transparent)"><span>Retenida sencilla + ancla</span><span class="num text-muted" style="margin-left:auto">×1</span></div>
+              </div>
+            </div>
+
+            <button class="btn btn-primary btn-block">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+              Configurar poste
+            </button>
+            <button class="btn btn-secondary btn-block" style="margin-top:0">Aplicar a todo el tramo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ 1c — POLE CONFIGURATION ══════════ -->
+  <div id="1c" style="display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;align-items:baseline;gap:14px">
+      <span style="font-family:var(--font-heading);font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#5f5c58">1c · Pole Configuration</span>
+      <span style="flex:1;height:1px;background:#c4c1be"></span>
+      <span class="num" style="font-size:11px;color:#807c78">modal over map editor</span>
+    </div>
+    <div style="width:1440px;height:900px;border:1px solid var(--color-divider);box-shadow:var(--shadow-md);overflow:hidden;position:relative;background:#3f4a3a">
+      <div style="position:absolute;inset:0;filter:blur(2px) brightness(.72)">
+        <img style="position:absolute;left:0;top:0;width:480px;height:480px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28911/14499" alt="">
+        <img style="position:absolute;left:480px;top:0;width:480px;height:480px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28911/14500" alt="">
+        <img style="position:absolute;left:960px;top:0;width:480px;height:480px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28911/14501" alt="">
+        <img style="position:absolute;left:0;top:480px;width:480px;height:480px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28912/14499" alt="">
+        <img style="position:absolute;left:480px;top:480px;width:480px;height:480px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28912/14500" alt="">
+        <img style="position:absolute;left:960px;top:480px;width:480px;height:480px" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/16/28912/14501" alt="">
+      </div>
+      <div style="position:absolute;inset:0;background:color-mix(in srgb, #2d2b2b 55%, transparent);display:grid;place-items:center;padding:34px">
+
+        <div style="width:1160px;max-height:820px;display:flex;flex-direction:column;background:var(--color-bg);border:1px solid var(--color-divider);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden">
+          <div style="display:flex;align-items:center;gap:12px;padding:16px 24px;border-bottom:1px solid var(--color-divider);background:var(--color-neutral-100)">
+            <div>
+              <div class="card-kicker">Ramal Ejido San Isidro · tramo 4–6</div>
+              <div style="font-family:var(--font-heading);font-size:24px;line-height:1.1">Configuración del poste P-05</div>
+            </div>
+            <span class="tag tag-accent" style="margin-left:14px">TS-3 sugerida por el sistema</span>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+              <button class="btn btn-secondary btn-icon" aria-label="Poste anterior"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg></button>
+              <span class="num text-muted" style="font-size:12px">5 / 34</span>
+              <button class="btn btn-secondary btn-icon" aria-label="Poste siguiente"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></button>
+              <span style="width:1px;height:22px;background:var(--color-divider)"></span>
+              <button class="btn btn-ghost" aria-label="Cerrar"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+            </div>
+          </div>
+
+          <div style="flex:1;display:flex;min-height:0">
+
+            <!-- diagram -->
+            <div style="width:430px;flex:none;border-right:1px solid var(--color-divider);background:var(--color-surface);position:relative;display:flex;flex-direction:column">
+              <div style="padding:14px 18px 0;display:flex;align-items:center;gap:10px">
+                <h6 style="margin:0">Diagrama de estructura</h6>
+                <span class="text-muted num" style="margin-left:auto;font-size:11px">vista frontal · 1:40</span>
+              </div>
+              <div style="flex:1;position:relative;display:grid;place-items:center">
+                <svg width="380" height="560" viewBox="0 0 380 560">
+                  <line x1="30" y1="500" x2="350" y2="500" stroke="#201f1d" stroke-opacity=".35" stroke-width="1"/>
+                  <path d="M30 506h320" stroke="#201f1d" stroke-opacity=".18" stroke-width="6" stroke-dasharray="2 5"/>
+                  <!-- guy wire -->
+                  <line x1="190" y1="150" x2="296" y2="497" stroke="#7e8288" stroke-width="2.4"/>
+                  <line x1="190" y1="150" x2="296" y2="497" stroke="#e4e6e8" stroke-width=".8"/>
+                  <!-- shaft -->
+                  <rect x="178" y="80" width="24" height="425" rx="2" fill="url(#metalPole)" stroke="#33302c" stroke-width="1"/>
+                  <rect x="178" y="80" width="24" height="425" fill="none" stroke="#ffffff" stroke-opacity=".18" stroke-width=".6"/>
+                  <line x1="184" y1="86" x2="184" y2="500" stroke="#f3f4f5" stroke-opacity=".5" stroke-width="1.6"/>
+                  <line x1="197" y1="86" x2="197" y2="500" stroke="#2f2c29" stroke-opacity=".35" stroke-width="1.2"/>
+                  <!-- crossarm -->
+                  <rect x="60" y="112" width="260" height="15" rx="2" fill="url(#metalH)" stroke="#33302c" stroke-width="1"/>
+                  <line x1="62" y1="115" x2="318" y2="115" stroke="#eef0f1" stroke-opacity=".65" stroke-width="1.4"/>
+                  <!-- braces -->
+                  <path d="M96 127 178 186" stroke="url(#metalH)" stroke-width="8" stroke-linecap="round"/>
+                  <path d="M96 127 178 186" stroke="#33302c" stroke-width=".8" fill="none" stroke-opacity=".7"/>
+                  <path d="M284 127 202 186" stroke="url(#metalH)" stroke-width="8" stroke-linecap="round"/>
+                  <path d="M284 127 202 186" stroke="#33302c" stroke-width=".8" fill="none" stroke-opacity=".7"/>
+                  <!-- insulators -->
+                  <g>
+                    <rect x="74" y="98" width="12" height="16" fill="url(#metalV)" stroke="#33302c" stroke-width=".8"/>
+                    <ellipse cx="80" cy="92" rx="15" ry="6" fill="url(#glass)" stroke="#33302c" stroke-width=".8"/>
+                    <ellipse cx="80" cy="84" rx="12" ry="5" fill="url(#glass)" stroke="#33302c" stroke-width=".8"/>
+                    <ellipse cx="80" cy="77" rx="9" ry="4.5" fill="url(#glass)" stroke="#33302c" stroke-width=".8"/>
+                  </g>
+                  <g>
+                    <rect x="184" y="98" width="12" height="16" fill="url(#metalV)" stroke="#33302c" stroke-width=".8"/>
+                    <ellipse cx="190" cy="92" rx="15" ry="6" fill="url(#glass)" stroke="#33302c" stroke-width=".8"/>
+                    <ellipse cx="190" cy="84" rx="12" ry="5" fill="url(#glass)" stroke="#33302c" stroke-width=".8"/>
+                    <ellipse cx="190" cy="77" rx="9" ry="4.5" fill="url(#glass)" stroke="#33302c" stroke-width=".8"/>
+                  </g>
+                  <g>
+                    <rect x="294" y="98" width="12" height="16" fill="url(#metalV)" stroke="#33302c" stroke-width=".8"/>
+                    <ellipse cx="300" cy="92" rx="15" ry="6" fill="url(#glass)" stroke="#33302c" stroke-width=".8"/>
+                    <ellipse cx="300" cy="84" rx="12" ry="5" fill="url(#glass)" stroke="#33302c" stroke-width=".8"/>
+                    <ellipse cx="300" cy="77" rx="9" ry="4.5" fill="url(#glass)" stroke="#33302c" stroke-width=".8"/>
+                  </g>
+                  <!-- conductors -->
+                  <path d="M0 74 Q80 66 80 71" stroke="#4a4744" stroke-width="2.6" fill="none"/>
+                  <path d="M80 71 Q160 78 190 71" stroke="#4a4744" stroke-width="2.6" fill="none"/>
+                  <path d="M190 71 Q260 78 300 71" stroke="#4a4744" stroke-width="2.6" fill="none"/>
+                  <path d="M300 71 Q350 66 380 74" stroke="#4a4744" stroke-width="2.6" fill="none"/>
+                  <!-- anchor -->
+                  <ellipse cx="296" cy="500" rx="14" ry="5" fill="#8d9195" stroke="#33302c" stroke-width=".8"/>
+                  <!-- callouts -->
+                  <line x1="80" y1="84" x2="36" y2="52" stroke="#b68235" stroke-width="1" stroke-dasharray="3 3"/>
+                  <circle cx="34" cy="50" r="10" fill="none" stroke="#b68235" stroke-width="1"/>
+                  <text x="34" y="54" text-anchor="middle" font-family="Lora, serif" font-size="11" fill="#7d5411">A</text>
+                  <line x1="150" y1="119" x2="112" y2="232" stroke="#b68235" stroke-width="1" stroke-dasharray="3 3"/>
+                  <circle cx="110" cy="243" r="10" fill="none" stroke="#b68235" stroke-width="1"/>
+                  <text x="110" y="247" text-anchor="middle" font-family="Lora, serif" font-size="11" fill="#7d5411">B</text>
+                  <line x1="190" y1="330" x2="120" y2="330" stroke="#b68235" stroke-width="1" stroke-dasharray="3 3"/>
+                  <circle cx="110" cy="330" r="10" fill="none" stroke="#b68235" stroke-width="1"/>
+                  <text x="110" y="334" text-anchor="middle" font-family="Lora, serif" font-size="11" fill="#7d5411">C</text>
+                  <line x1="270" y1="440" x2="322" y2="420" stroke="#b68235" stroke-width="1" stroke-dasharray="3 3"/>
+                  <circle cx="332" cy="416" r="10" fill="none" stroke="#b68235" stroke-width="1"/>
+                  <text x="332" y="420" text-anchor="middle" font-family="Lora, serif" font-size="11" fill="#7d5411">D</text>
+                  <!-- dimension -->
+                  <line x1="352" y1="80" x2="352" y2="500" stroke="#201f1d" stroke-opacity=".4" stroke-width=".8"/>
+                  <line x1="347" y1="80" x2="357" y2="80" stroke="#201f1d" stroke-opacity=".4" stroke-width=".8"/>
+                  <line x1="347" y1="500" x2="357" y2="500" stroke="#201f1d" stroke-opacity=".4" stroke-width=".8"/>
+                  <text x="366" y="296" text-anchor="middle" font-family="Lora, serif" font-size="11" fill="#605d5d" transform="rotate(90 366 296)" style="font-variant-numeric:tabular-nums">12.0 m</text>
+                </svg>
+              </div>
+              <div style="padding:10px 18px 16px;display:flex;gap:16px;font-size:11.5px" class="text-muted">
+                <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:10px;border:1px solid var(--color-neutral-700);border-radius:2px"></span>Colocado automáticamente</span>
+                <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:10px;border:1px dashed var(--color-accent);border-radius:2px;background:color-mix(in srgb,#b68235 10%,transparent)"></span>Editado manualmente</span>
+              </div>
+            </div>
+
+            <!-- controls -->
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+              <div style="padding:18px 24px 0">
+                <h6 style="margin:0 0 10px">Tipo de estructura</h6>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+                  <div class="card" style="gap:6px;padding:11px;box-shadow:inset 0 0 0 1px var(--color-accent);cursor:pointer">
+                    <div class="card-kicker">Seleccionada</div>
+                    <div class="card-title">TS-3</div>
+                    <div class="card-body" style="font-size:12px">Suspensión tangente, deflexión 0°–5°</div>
+                  </div>
+                  <div class="card" style="gap:6px;padding:11px;cursor:pointer">
+                    <div class="card-kicker" style="color:var(--color-neutral-600)">Alterna</div>
+                    <div class="card-title">TA-3</div>
+                    <div class="card-body" style="font-size:12px">Ángulo 5°–30°, cruceta doble</div>
+                  </div>
+                  <div class="card" style="gap:6px;padding:11px;cursor:pointer">
+                    <div class="card-kicker" style="color:var(--color-neutral-600)">Alterna</div>
+                    <div class="card-title">TR-3</div>
+                    <div class="card-body" style="font-size:12px">Remate con retenida a tierra</div>
+                  </div>
+                  <div class="card" style="gap:6px;padding:11px;cursor:pointer">
+                    <div class="card-kicker" style="color:var(--color-neutral-600)">Alterna</div>
+                    <div class="card-title">TD-3</div>
+                    <div class="card-body" style="font-size:12px">Doble circuito vertical</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="padding:18px 24px 0;display:flex;align-items:center;gap:12px">
+                <h6 style="margin:0">Componentes de herraje</h6>
+                <span class="text-muted" style="font-size:12px">9 piezas · 2 editadas manualmente</span>
+                <button class="btn btn-ghost" style="margin-left:auto">Restablecer a la norma</button>
+                <button class="btn btn-secondary">Agregar componente</button>
+              </div>
+
+              <div style="padding:8px 24px 0;overflow:auto">
+                <table class="table">
+                  <thead><tr><th style="width:34px"></th><th>Componente</th><th>Código CFE</th><th style="text-align:right">Cant.</th><th>Origen</th><th style="width:70px"></th></tr></thead>
+                  <tbody>
+                    <tr>
+                      <td><span style="display:grid;place-items:center;width:26px;height:26px;border:1px solid var(--color-divider);border-radius:var(--radius-sm);background:var(--color-neutral-100)"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="2" y="10" width="20" height="4" rx="1" fill="url(#metalH)" stroke="#33302c" stroke-width=".7"/></svg></span></td>
+                      <td><span style="font-family:var(--font-heading);font-size:15px">A · Cruceta de acero galvanizado 2.0 m</span><div class="text-muted" style="font-size:11px">Con soportes diagonales de 0.9 m</div></td>
+                      <td class="num">HR-CR-200</td><td class="num" style="text-align:right">1</td>
+                      <td><span class="tag tag-neutral">Automático</span></td>
+                      <td><a href="#1c" style="font-size:12px;text-decoration:none">Editar</a></td>
+                    </tr>
+                    <tr>
+                      <td><span style="display:grid;place-items:center;width:26px;height:26px;border:1px solid var(--color-divider);border-radius:var(--radius-sm);background:var(--color-neutral-100)"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="10" y="13" width="4" height="8" fill="url(#metalV)" stroke="#33302c" stroke-width=".6"/><ellipse cx="12" cy="11" rx="7" ry="3" fill="url(#glass)" stroke="#33302c" stroke-width=".6"/><ellipse cx="12" cy="7" rx="5" ry="2.4" fill="url(#glass)" stroke="#33302c" stroke-width=".6"/></svg></span></td>
+                      <td><span style="font-family:var(--font-heading);font-size:15px">B · Aislador polimérico tipo pin 15 kV</span><div class="text-muted" style="font-size:11px">Fase A, B, C sobre cruceta</div></td>
+                      <td class="num">AIS-PIN-15</td><td class="num" style="text-align:right">3</td>
+                      <td><span class="tag tag-neutral">Automático</span></td>
+                      <td><a href="#1c" style="font-size:12px;text-decoration:none">Editar</a></td>
+                    </tr>
+                    <tr style="background:color-mix(in srgb,#b68235 6%,transparent)">
+                      <td><span style="display:grid;place-items:center;width:26px;height:26px;border:1px dashed var(--color-accent);border-radius:var(--radius-sm);background:var(--color-neutral-100)"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M6 3h12" stroke="#7e8288" stroke-width="2"/><rect x="10" y="3" width="4" height="18" fill="url(#metalV)" stroke="#33302c" stroke-width=".6"/></svg></span></td>
+                      <td><span style="font-family:var(--font-heading);font-size:15px">C · Abrazadera doble de 5/8″</span><div class="text-muted" style="font-size:11px">Cantidad ajustada por el usuario · 12 sep</div></td>
+                      <td class="num">HR-AB-058</td><td class="num" style="text-align:right">4</td>
+                      <td><span class="tag tag-accent">Manual</span></td>
+                      <td><a href="#1c" style="font-size:12px;text-decoration:none">Editar</a></td>
+                    </tr>
+                    <tr style="background:color-mix(in srgb,#b68235 6%,transparent)">
+                      <td><span style="display:grid;place-items:center;width:26px;height:26px;border:1px dashed var(--color-accent);border-radius:var(--radius-sm);background:var(--color-neutral-100)"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 3 17 20" stroke="#7e8288" stroke-width="2.2"/><ellipse cx="18" cy="20" rx="4" ry="1.8" fill="#8d9195" stroke="#33302c" stroke-width=".6"/></svg></span></td>
+                      <td><span style="font-family:var(--font-heading);font-size:15px">D · Retenida sencilla + ancla de expansión</span><div class="text-muted" style="font-size:11px">Agregada manualmente: suelo arenoso</div></td>
+                      <td class="num">ANC-RS-001</td><td class="num" style="text-align:right">1</td>
+                      <td><span class="tag tag-accent">Manual</span></td>
+                      <td><a href="#1c" style="font-size:12px;text-decoration:none">Editar</a></td>
+                    </tr>
+                    <tr>
+                      <td><span style="display:grid;place-items:center;width:26px;height:26px;border:1px solid var(--color-divider);border-radius:var(--radius-sm);background:var(--color-neutral-100)"><svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="#7e8288" stroke-width="2.2"/></svg></span></td>
+                      <td><span style="font-family:var(--font-heading);font-size:15px">Conector de derivación en caliente</span><div class="text-muted" style="font-size:11px">ACSR 1/0 — ACSR 1/0</div></td>
+                      <td class="num">CON-DER-10</td><td class="num" style="text-align:right">3</td>
+                      <td><span class="tag tag-neutral">Automático</span></td>
+                      <td><a href="#1c" style="font-size:12px;text-decoration:none">Editar</a></td>
+                    </tr>
+                    <tr>
+                      <td style="border-bottom:0"><span style="display:grid;place-items:center;width:26px;height:26px;border:1px solid var(--color-divider);border-radius:var(--radius-sm);background:var(--color-neutral-100)"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 3v14" stroke="url(#metalV)" stroke-width="3"/><path d="M8 19h8" stroke="#7e8288" stroke-width="2"/></svg></span></td>
+                      <td style="border-bottom:0"><span style="font-family:var(--font-heading);font-size:15px">Varilla de tierra 5/8″ × 3.0 m</span><div class="text-muted" style="font-size:11px">Con cable de cobre desnudo #4</div></td>
+                      <td class="num" style="border-bottom:0">TIE-VAR-058</td><td class="num" style="text-align:right;border-bottom:0">1</td>
+                      <td style="border-bottom:0"><span class="tag tag-neutral">Automático</span></td>
+                      <td style="border-bottom:0"><a href="#1c" style="font-size:12px;text-decoration:none">Editar</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div style="margin-top:auto;padding:14px 24px;border-top:1px solid var(--color-divider);display:flex;align-items:center;gap:12px;background:var(--color-neutral-100)">
+                <span class="text-muted" style="font-size:12.5px">Los cambios manuales se conservan al recalcular la trayectoria.</span>
+                <div style="margin-left:auto;display:flex;gap:10px">
+                  <button class="btn btn-secondary">Cancelar</button>
+                  <button class="btn btn-primary">Guardar configuración</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ 1d — BILL OF MATERIALS ══════════ -->
+  <div id="1d" style="display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;align-items:baseline;gap:14px">
+      <span style="font-family:var(--font-heading);font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#5f5c58">1d · Bill of Materials</span>
+      <span style="flex:1;height:1px;background:#c4c1be"></span>
+      <span class="num" style="font-size:11px;color:#807c78">1440 × 900</span>
+    </div>
+    <div style="width:1440px;height:900px;background:var(--color-bg);border:1px solid var(--color-divider);box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+
+      <div style="display:flex;align-items:center;gap:14px;padding:9px 18px;border-bottom:1px solid var(--color-divider);background:var(--color-neutral-100)">
+        <a href="#1b" style="display:flex;align-items:center;gap:6px;font-size:13px;text-decoration:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>Editor de mapa
+        </a>
+        <span style="width:1px;height:18px;background:var(--color-divider)"></span>
+        <span style="font-family:var(--font-heading);font-size:17px">Ramal Ejido San Isidro</span>
+        <span class="text-muted num" style="font-size:12px">Lista de materiales · rev. 3 · 14 sep 2026</span>
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button class="btn btn-secondary">Exportar XLSX</button>
+          <button class="btn btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 19h16"/></svg>
+            Descargar PDF
+          </button>
+        </div>
+      </div>
+
+      <div style="flex:1;padding:24px 40px 0;display:flex;flex-direction:column;gap:18px;min-height:0">
+        <div style="display:flex;align-items:flex-end;gap:20px">
+          <div>
+            <h2 style="margin:0 0 2px">Lista de materiales</h2>
+            <div class="text-muted" style="font-size:13px">Generada del trazo vigente · precios del catálogo CFE 2026-Q3</div>
+          </div>
+          <div class="seg" style="margin-left:auto">
+            <label class="seg-opt"><input type="radio" name="b-g" defaultChecked="{{ true }}">Por categoría</label>
+            <label class="seg-opt"><input type="radio" name="b-g">Por poste</label>
+            <label class="seg-opt"><input type="radio" name="b-g">Por proveedor</label>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px">
+          <div class="card"><div class="card-kicker">Postes</div><div class="num" style="font-family:var(--font-heading);font-size:32px;line-height:1">34</div><div class="card-meta">28 PC-12/700 · 6 PC-13/1000</div></div>
+          <div class="card"><div class="card-kicker">Tramos (vanos)</div><div class="num" style="font-family:var(--font-heading);font-size:32px;line-height:1">33</div><div class="card-meta">promedio 71.4 m</div></div>
+          <div class="card"><div class="card-kicker">Longitud de línea</div><div class="num" style="font-family:var(--font-heading);font-size:32px;line-height:1">2.41 <span style="font-size:17px">km</span></div><div class="card-meta">13.8 kV, 3 fases</div></div>
+          <div class="card"><div class="card-kicker">Piezas de herraje</div><div class="num" style="font-family:var(--font-heading);font-size:32px;line-height:1">412</div><div class="card-meta">19 partidas distintas</div></div>
+          <div class="card" style="box-shadow:inset 0 0 0 1px var(--color-accent)"><div class="card-kicker">Costo estimado</div><div class="num" style="font-family:var(--font-heading);font-size:32px;line-height:1">$1 284 600</div><div class="card-meta">MXN · sin IVA ni mano de obra</div></div>
+        </div>
+
+        <div style="flex:1;min-height:0;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:var(--color-neutral-100);overflow:auto">
+          <table class="table">
+            <thead><tr>
+              <th style="padding-left:18px;width:34%">Partida</th><th>Código CFE</th><th>Unidad</th>
+              <th style="text-align:right">Cantidad</th>
+              <sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><th style="text-align:right">P. unitario</th><th style="text-align:right;padding-right:18px">Importe</th></sc-if>
+            </tr></thead>
+            <tbody>
+              <tr><td colspan="6" style="padding-left:18px;background:var(--color-surface)"><span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.09em;text-transform:uppercase">Postes y estructuras</span><span class="text-muted num" style="font-size:11px;margin-left:10px">4 partidas · $612 400</span></td></tr>
+              <tr><td style="padding-left:18px">Poste de concreto PC 12 m clase 700</td><td class="num">PC-12-700</td><td>pza</td><td class="num" style="text-align:right">28</td><sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><td class="num" style="text-align:right">$14 800</td><td class="num" style="text-align:right;padding-right:18px">$414 400</td></sc-if></tr>
+              <tr><td style="padding-left:18px">Poste de concreto PC 13 m clase 1000</td><td class="num">PC-13-1000</td><td>pza</td><td class="num" style="text-align:right">6</td><sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><td class="num" style="text-align:right">$21 500</td><td class="num" style="text-align:right;padding-right:18px">$129 000</td></sc-if></tr>
+              <tr><td style="padding-left:18px">Cruceta de acero galvanizado 2.0 m</td><td class="num">HR-CR-200</td><td>pza</td><td class="num" style="text-align:right">34</td><sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><td class="num" style="text-align:right">$1 640</td><td class="num" style="text-align:right;padding-right:18px">$55 760</td></sc-if></tr>
+              <tr><td style="padding-left:18px">Soporte diagonal de cruceta 0.9 m</td><td class="num">HR-SD-090</td><td>pza</td><td class="num" style="text-align:right">68</td><sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><td class="num" style="text-align:right">$195</td><td class="num" style="text-align:right;padding-right:18px">$13 260</td></sc-if></tr>
+
+              <tr><td colspan="6" style="padding-left:18px;background:var(--color-surface)"><span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.09em;text-transform:uppercase">Herrajes y aislamiento</span><span class="text-muted num" style="font-size:11px;margin-left:10px">6 partidas · $268 940</span></td></tr>
+              <tr><td style="padding-left:18px">Aislador polimérico tipo pin 15 kV</td><td class="num">AIS-PIN-15</td><td>pza</td><td class="num" style="text-align:right">102</td><sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><td class="num" style="text-align:right">$410</td><td class="num" style="text-align:right;padding-right:18px">$41 820</td></sc-if></tr>
+              <tr><td style="padding-left:18px">Aislador de suspensión 15 kV</td><td class="num">AIS-SUS-15</td><td>pza</td><td class="num" style="text-align:right">24</td><sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><td class="num" style="text-align:right">$620</td><td class="num" style="text-align:right;padding-right:18px">$14 880</td></sc-if></tr>
+              <tr><td style="padding-left:18px">Abrazadera doble de 5/8″</td><td class="num">HR-AB-058</td><td>pza</td><td class="num" style="text-align:right">76</td><sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><td class="num" style="text-align:right">$148</td><td class="num" style="text-align:right;padding-right:18px">$11 248</td></sc-if></tr>
+              <tr><td style="padding-left:18px">Perno máquina 5/8″ × 12″ galvanizado</td><td class="num">HR-PM-512</td><td>pza</td><td class="num" style="text-align:right">210</td><sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><td class="num" style="text-align:right">$62</td><td class="num" style="text-align:right;padding-right:18px">$13 020</td></sc-if></tr>
+              <tr><td style="padding-left:18px">Apartarrayos de óxido metálico 12 kV</td><td class="num">APR-OM-12</td><td>pza</td><td class="num" style="text-align:right">9</td><sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><td class="num" style="text-align:right">$2 980</td><td class="num" style="text-align:right;padding-right:18px">$26 820</td></sc-if></tr>
+              <tr><td style="padding-left:18px">Conector de derivación en caliente</td><td class="num">CON-DER-10</td><td>pza</td><td class="num" style="text-align:right">96</td><sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><td class="num" style="text-align:right">$186</td><td class="num" style="text-align:right;padding-right:18px">$17 856</td></sc-if></tr>
+
+              <tr><td colspan="6" style="padding-left:18px;background:var(--color-surface)"><span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.09em;text-transform:uppercase">Conductores y tierra</span><span class="text-muted num" style="font-size:11px;margin-left:10px">4 partidas · $403 260</span></td></tr>
+              <tr><td style="padding-left:18px">Conductor ACSR 1/0 AWG (Raven)</td><td class="num">CDR-ACSR-10</td><td>m</td><td class="num" style="text-align:right">7 530</td><sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><td class="num" style="text-align:right">$44</td><td class="num" style="text-align:right;padding-right:18px">$331 320</td></sc-if></tr>
+              <tr><td style="padding-left:18px">Cable de acero para retenida 3/8″</td><td class="num">RET-CA-038</td><td>m</td><td class="num" style="text-align:right">480</td><sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><td class="num" style="text-align:right">$38</td><td class="num" style="text-align:right;padding-right:18px">$18 240</td></sc-if></tr>
+              <tr><td style="padding-left:18px">Ancla de expansión con varilla</td><td class="num">ANC-RS-001</td><td>pza</td><td class="num" style="text-align:right">16</td><sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><td class="num" style="text-align:right">$1 240</td><td class="num" style="text-align:right;padding-right:18px">$19 840</td></sc-if></tr>
+              <tr><td style="padding-left:18px;border-bottom:0">Varilla de tierra 5/8″ × 3.0 m con cable Cu #4</td><td class="num" style="border-bottom:0">TIE-VAR-058</td><td style="border-bottom:0">jgo</td><td class="num" style="text-align:right;border-bottom:0">18</td><sc-if value="{{ showCosts }}" hint-placeholder-val="{{ true }}"><td class="num" style="text-align:right;border-bottom:0">$1 877</td><td class="num" style="text-align:right;padding-right:18px;border-bottom:0">$33 860</td></sc-if></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:20px;padding:12px 0 18px;border-top:1px solid var(--color-divider)">
+          <span class="text-muted" style="font-size:12.5px;max-width:520px">Cantidades con 3 % de desperdicio para conductor. Las partidas editadas manualmente se marcan en el anexo del PDF.</span>
+          <div style="margin-left:auto;display:flex;align-items:baseline;gap:28px">
+            <span class="text-muted num" style="font-size:13px">Subtotal <span style="font-family:var(--font-heading);font-size:19px;color:var(--color-text);margin-left:8px">$1 284 600</span></span>
+            <span class="text-muted num" style="font-size:13px">IVA 16 % <span style="font-family:var(--font-heading);font-size:19px;color:var(--color-text);margin-left:8px">$205 536</span></span>
+            <span class="num" style="font-size:13px;color:var(--color-accent-700)">Total <span style="font-family:var(--font-heading);font-size:26px;margin-left:8px">$1 490 136</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showCosts&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;BOM&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return { showCosts: this.props.showCosts ?? true };
+  }
+}
+
+</script>
+</body>
+</html>
