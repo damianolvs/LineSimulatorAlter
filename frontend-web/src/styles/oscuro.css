@@ -1,0 +1,51 @@
+/* Tema oscuro del sistema Classical.
+   Refleja el tema claro: el "ground" pasa a casi negro cálido, las superficies elevadas (neutral-100)
+   quedan más claras que el fondo y las rampas tonales se invierten, de modo que el mismo escalón
+   (100 = tinte suave, 800 = texto sobre tinte) sigue significando lo mismo. El acento se aclara
+   un poco para conservar el contraste 3:1 sobre el fondo oscuro. */
+@media screen {
+  :root[data-tema="oscuro"] {
+    color-scheme: dark;
+
+    --color-bg: #1a1918;
+    --color-surface: #100f0f;
+    --color-text: #ece8e1;
+    --color-accent: #cf9a48;
+    --color-accent-2: #c4964f;
+    --color-divider: color-mix(in srgb, #ece8e1 18%, transparent);
+
+    --color-neutral-100: #242220;
+    --color-neutral-200: #2e2c2a;
+    --color-neutral-300: #423f3d;
+    --color-neutral-400: #5a5654;
+    --color-neutral-500: #7a7573;
+    --color-neutral-600: #9a9591;
+    --color-neutral-700: #b8b3ae;
+    --color-neutral-800: #d3cec8;
+    --color-neutral-900: #ebe6e0;
+
+    --color-accent-100: #33240c;
+    --color-accent-200: #4a3410;
+    --color-accent-300: #6b4a17;
+    --color-accent-400: #8f6420;
+    --color-accent-500: #b27d2d;
+    --color-accent-600: #c9963f;
+    --color-accent-700: #dcae62;
+    --color-accent-800: #ecca92;
+    --color-accent-900: #f6e2bf;
+
+    --color-accent-2-100: #33240c;
+    --color-accent-2-200: #4a3410;
+    --color-accent-2-300: #6b4a17;
+    --color-accent-2-400: #8f6420;
+    --color-accent-2-500: #b27d2d;
+    --color-accent-2-600: #c9963f;
+    --color-accent-2-700: #dcae62;
+    --color-accent-2-800: #ecca92;
+    --color-accent-2-900: #f6e2bf;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.5);
+    --shadow-md: 0 3px 10px rgb(0 0 0 / 0.5);
+    --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.6);
+  }
+}

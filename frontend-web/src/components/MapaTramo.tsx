@@ -106,8 +106,8 @@ function ControlesMapa({ base, onCambiarBase }: Pick<Props, "base" | "onCambiarB
         ref={zoom}
         className="absolute left-3.5 top-3.5 z-[1000] flex flex-col overflow-hidden"
         style={{
-          background: "rgba(243,242,242,.94)",
-          border: "1px solid rgba(32,31,29,.25)",
+          background: "color-mix(in srgb, var(--color-bg) 94%, transparent)",
+          border: "1px solid var(--color-divider)",
           borderRadius: "var(--radius-md)",
           boxShadow: "var(--shadow-sm)",
         }}
@@ -129,7 +129,7 @@ function ControlesMapa({ base, onCambiarBase }: Pick<Props, "base" | "onCambiarB
       <div
         ref={selector}
         className="seg absolute right-3.5 top-3.5 z-[1000]"
-        style={{ background: "rgba(243,242,242,.94)", boxShadow: "var(--shadow-sm)" }}
+        style={{ background: "color-mix(in srgb, var(--color-bg) 94%, transparent)", boxShadow: "var(--shadow-sm)" }}
       >
         {(Object.keys(BASES) as BaseMapa[]).map((clave) => (
           <label key={clave} className="seg-opt">

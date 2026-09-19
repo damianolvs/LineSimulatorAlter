@@ -2,6 +2,11 @@
 @import "tailwindcss";
 /* Sistema de diseño "Classical" (copiado de mock-ups/.../_ds): tokens y componentes .btn, .card, .table, .tag... */
 @import "./styles/classical.css";
+@import "./styles/oscuro.css";
+
+:root {
+  color-scheme: light;
+}
 
 /* Tabular en cifras: el sistema lo pide para toda cantidad que se lea como dato. */
 .num {

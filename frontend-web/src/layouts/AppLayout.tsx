@@ -1,5 +1,6 @@
 // src/layouts/AppLayout.tsx — páginas con barra de navegación superior (mockup 1a)
 import { NavLink, Outlet } from 'react-router-dom'
+import BotonTema from '../components/BotonTema'
 import MetalDefs from '../components/MetalDefs'
 import { SpriteDefs } from '../pages/SpriteDefs'
 
@@ -30,6 +31,7 @@ export default function AppLayout() {
             {etiqueta}
           </NavLink>
         ))}
+        <BotonTema />
       </nav>
       <main className="min-w-0 flex-1">
         <Outlet />

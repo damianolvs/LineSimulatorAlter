@@ -92,6 +92,7 @@ export default function PosteDiagrama({
       ref={svgRef}
       viewBox={`${-MARGEN_X} ${-MARGEN_SUPERIOR} ${MARGEN_X * 2} ${alto + MARGEN_SUPERIOR + MARGEN_INFERIOR}`}
       className="h-full w-full touch-none select-none"
+      style={{ color: "var(--color-text)" }}
       onPointerMove={arrastrar}
       onPointerUp={soltar}
       onPointerCancel={soltar}
@@ -99,15 +100,15 @@ export default function PosteDiagrama({
     >
       {pisoY !== null && (
         <>
-          <line x1={-MARGEN_X + 6} x2={MARGEN_X - 26} y1={pisoY} y2={pisoY} stroke="#201f1d" strokeOpacity={0.35} />
+          <line x1={-MARGEN_X + 6} x2={MARGEN_X - 26} y1={pisoY} y2={pisoY} stroke="currentColor" strokeOpacity={0.35} />
           <path
             d={`M${-MARGEN_X + 6} ${pisoY + 6}H${MARGEN_X - 26}`}
-            stroke="#201f1d"
+            stroke="currentColor"
             strokeOpacity={0.18}
             strokeWidth={6}
             strokeDasharray="2 5"
           />
-          <text x={-MARGEN_X + 8} y={pisoY - 5} fontSize={9} fill="#605d5d">
+          <text x={-MARGEN_X + 8} y={pisoY - 5} fontSize={9} fill="currentColor" fillOpacity={0.7}>
             nivel de piso
           </text>
         </>
@@ -125,7 +126,7 @@ export default function PosteDiagrama({
       />
 
       {/* Cota de altura total */}
-      <g stroke="#201f1d" strokeOpacity={0.4} strokeWidth={0.8}>
+      <g stroke="currentColor" strokeOpacity={0.4} strokeWidth={0.8}>
         <line x1={MARGEN_X - 18} x2={MARGEN_X - 18} y1={0} y2={alto} />
         <line x1={MARGEN_X - 23} x2={MARGEN_X - 13} y1={0} y2={0} />
         <line x1={MARGEN_X - 23} x2={MARGEN_X - 13} y1={alto} y2={alto} />
@@ -135,7 +136,8 @@ export default function PosteDiagrama({
         y={alto / 2}
         textAnchor="middle"
         fontSize={11}
-        fill="#605d5d"
+        fill="currentColor"
+        fillOpacity={0.7}
         transform={`rotate(90 ${MARGEN_X - 6} ${alto / 2})`}
         style={{ fontVariantNumeric: "tabular-nums" }}
       >

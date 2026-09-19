@@ -1,6 +1,7 @@
 // frontend-web/src/components/BarraProyecto.tsx
 import { ChevronLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import BotonTema from "./BotonTema";
 
 interface Props {
   volverA: string;
@@ -27,7 +28,10 @@ export default function BarraProyecto({ volverA, etiquetaVolver, titulo, childre
         {titulo}
       </span>
       {children}
-      {acciones && <div className="ml-auto flex items-center gap-2">{acciones}</div>}
+      <div className="ml-auto flex items-center gap-2">
+        {acciones}
+        <BotonTema />
+      </div>
     </div>
   );
 }
