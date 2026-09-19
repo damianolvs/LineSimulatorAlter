@@ -1,0 +1,8 @@
+# apps/reglas/apps.py
+from django.apps import AppConfig
+
+
+class ReglasConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.reglas"
+    label = "reglas"

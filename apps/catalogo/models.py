@@ -1,5 +1,6 @@
 # apps/catalogo/models.py
 from django.db import models
+from django.core.validators import FileExtensionValidator
 
 
 class EstructuraCFE(models.Model):
@@ -10,6 +11,28 @@ class EstructuraCFE(models.Model):
         default=False,
         help_text="Marca esta estructura como la que usan los postes de paso generados automáticamente (según CFE: 12m, cruceta PT/PR, 3 aisladores de porcelana). Debe haber exactamente una."
     )
+    estructura_mt = models.OneToOneField(
+        "reglas.EstructuraMT",
+        null=True,
+        blank=True,
+        related_name="estructura_cfe",
+        on_delete=models.SET_NULL,
+        help_text="Regla normativa de esta estructura (materiales y posiciones). Vacía si aún no está digitalizada.",
+    )
+    svg_preview = models.FileField(
+        upload_to="estructuras/previews/",
+        blank=True,
+        null=True,
+        validators=[FileExtensionValidator(["svg"])],
+        help_text="SVG de vista completa de la estructura (PoleStructures)",
+    )
+    icono_mapa = models.FileField(
+        upload_to="estructuras/iconos/",
+        blank=True,
+        null=True,
+        validators=[FileExtensionValidator(["svg"])],
+        help_text="Icono simplificado para marcador de mapa (UtilityPoleMarkers)",
+    )
 
     class Meta:
         verbose_name = "Estructura CFE"
@@ -18,6 +41,8 @@ class EstructuraCFE(models.Model):
 
     def __str__(self):
         return f"{self.codigo} — {self.nombre}"
+
+    
 
 
 class Material(models.Model):
@@ -35,6 +60,14 @@ class Material(models.Model):
     cantidad_estimada = models.BooleanField(
         default=False,
         help_text="Marca si la cantidad requerida aún necesita validarse contra catálogo real de proveedor."
+    )
+    componente_visual = models.ForeignKey(
+        "ComponenteVisual",
+        null=True,
+        blank=True,
+        related_name="materiales",
+        on_delete=models.SET_NULL,
+        help_text="Símbolo con el que se dibuja este material sobre el poste. Vacío si no se dibuja.",
     )
 
     class Meta:

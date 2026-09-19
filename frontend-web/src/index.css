@@ -1,2 +1,71 @@
 /* src/index.css */
 @import "tailwindcss";
+/* Sistema de diseño "Classical" (copiado de mock-ups/.../_ds): tokens y componentes .btn, .card, .table, .tag... */
+@import "./styles/classical.css";
+@import "./styles/oscuro.css";
+
+:root {
+  color-scheme: light;
+}
+
+/* Tabular en cifras: el sistema lo pide para toda cantidad que se lea como dato. */
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Filas de herramienta y selección del editor de mapa. */
+.tool:hover {
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+}
+.toolsel {
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+/* Leaflet: el mapa es un lienzo, no debe heredar el fondo ni el tipo del sistema. */
+.leaflet-container {
+  background: #3f4a3a;
+  font-family: var(--font-body);
+}
+.leaflet-container .leaflet-control-scale-line {
+  background: rgba(25, 23, 20, 0.72);
+  color: #f4ead8;
+  border: 0;
+  border-bottom: 1px solid #f4ead8;
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+}
+.leaflet-container .leaflet-control-attribution {
+  background: rgba(25, 23, 20, 0.6);
+  color: #d8cfbd;
+  font-size: 10px;
+}
+.leaflet-container .leaflet-control-attribution a {
+  color: #f0e2c8;
+}
+/* Los marcadores son divs propios: sin caja ni fondo de Leaflet. */
+.marcador-poste,
+.etiqueta-vano {
+  background: transparent;
+  border: 0;
+}
+
+/* Modo "trazar / colocar": el clic añade un poste, no arrastra el mapa. */
+.mapa-colocando .leaflet-container,
+.mapa-colocando .leaflet-grab {
+  cursor: crosshair;
+}
+
+@media print {
+  .no-imprimir {
+    display: none !important;
+  }
+}
+
+@media print {
+  .imprimir-libre {
+    height: auto !important;
+    overflow: visible !important;
+  }
+}

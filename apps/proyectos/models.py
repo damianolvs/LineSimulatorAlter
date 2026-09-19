@@ -6,10 +6,23 @@ from django.db import models
 
 class Proyecto(models.Model):
     """Un proyecto de línea de media tensión, contenedor de tramos."""
+
+    class Estado(models.TextChoices):
+        EN_DISENO = "en_diseno", "En diseño"
+        EN_REVISION = "en_revision", "En revisión"
+        APROBADO = "aprobado", "Aprobado"
+        ENTREGADO = "entregado", "Entregado"
+        ARCHIVADO = "archivado", "Archivado"
+
+    TENSION_CHOICES = [(13.8, "13.8 kV"), (34.5, "34.5 kV")]
+
     nombre = models.CharField(max_length=150)
     ubicacion = models.CharField(max_length=200, blank=True)
     descripcion = models.TextField(blank=True)
+    estado = models.CharField(max_length=12, choices=Estado.choices, default=Estado.EN_DISENO)
+    tension_kv = models.FloatField(choices=TENSION_CHOICES, default=13.8, help_text="Tensión nominal de la línea.")
     creado_en = models.DateTimeField(auto_now_add=True)
+    actualizado_en = models.DateTimeField(auto_now=True, help_text="Última vez que se modificó el proyecto o sus postes.")
 
     class Meta:
         verbose_name = "Proyecto"
@@ -39,6 +52,8 @@ class Tramo(models.Model):
 
 class Poste(models.Model):
     """Un poste dentro de un tramo, ya sea colocado por el usuario (ancla) o generado automáticamente (paso)."""
+    TERRENO_CHOICES = [("blando", "Blando"), ("normal", "Normal"), ("duro", "Duro")]
+
     tramo = models.ForeignKey(Tramo, related_name="postes", on_delete=models.CASCADE)
     estructura = models.ForeignKey(
         "catalogo.EstructuraCFE", related_name="postes", on_delete=models.PROTECT
@@ -49,6 +64,12 @@ class Poste(models.Model):
         help_text="True si el usuario lo colocó deliberadamente; False si se generó automáticamente como poste de paso."
     )
     geom = gis_models.PointField(srid=4326)
+    altura_m = models.FloatField(default=12.0, help_text="Altura del poste en metros (dato de norma, no escala el dibujo).")
+    resistencia_kg = models.PositiveIntegerField(default=750, help_text="Resistencia del poste en kg.")
+    tipo_terreno = models.CharField(
+        max_length=10, choices=TERRENO_CHOICES, default="normal",
+        help_text="Determina la profundidad de empotramiento (sección 03 00 02).",
+    )
 
     class Meta:
         verbose_name = "Poste"
@@ -118,6 +139,14 @@ class PosteComponente(models.Model):
     )
     slot = models.ForeignKey(
         "catalogo.SlotAnclaje", null=True, blank=True, related_name="ocupantes", on_delete=models.SET_NULL
+    )
+    regla_origen = models.ForeignKey(
+        "reglas.ReglaPosicionMaterial", null=True, blank=True, related_name="instancias",
+        on_delete=models.SET_NULL,
+        help_text="Regla que originó este componente en modo auto. Vacío si lo agregó el usuario.",
+    )
+    indice = models.PositiveSmallIntegerField(
+        default=0, help_text="Posición dentro de la cantidad de la regla (ej. 0..2 para 3 aisladores)."
     )
     modo = models.CharField(max_length=6, choices=Modo.choices, default=Modo.AUTO)
 

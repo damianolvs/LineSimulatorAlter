@@ -12,7 +12,7 @@ from .serializers import (
 
 
 class EstructuraCFEViewSet(ReadOnlyModelViewSet):
-    queryset = EstructuraCFE.objects.prefetch_related("materiales__material")
+    queryset = EstructuraCFE.objects.select_related("estructura_mt__prefijo").prefetch_related("materiales__material")
     serializer_class = EstructuraCFESerializer
 
 
