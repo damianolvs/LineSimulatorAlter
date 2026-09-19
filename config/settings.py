@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.gis',  # Para PostGIS
 
     'rest_framework',
+    'rest_framework_gis',
     'corsheaders',
 
     'apps.catalogo',
+    'apps.reglas',
     'apps.proyectos',
 ]
 

@@ -1,6 +1,8 @@
 # apps/catalogo/serializers.py
 from rest_framework import serializers
 
+from apps.reglas.serializers import EstructuraMTResumenSerializer
+
 from .models import (
     ComponenteVisual,
     EstructuraCFE,
@@ -28,10 +30,11 @@ class EstructuraCFEMaterialSerializer(serializers.ModelSerializer):
 
 class EstructuraCFESerializer(serializers.ModelSerializer):
     materiales = EstructuraCFEMaterialSerializer(many=True, read_only=True)
+    estructura_mt = EstructuraMTResumenSerializer(read_only=True)
 
     class Meta:
         model = EstructuraCFE
-        fields = ["id", "codigo", "nombre", "descripcion", "materiales"]
+        fields = ["id", "codigo", "nombre", "descripcion", "es_paso_estandar", "estructura_mt", "materiales"]
 
 
 class ModuloMaterialSerializer(serializers.ModelSerializer):

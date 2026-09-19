@@ -84,7 +84,7 @@ export const DIMENSIONES_COMPONENTE: Record<string, { ancho: number; alto: numbe
   aislador_set_3: { ancho: 25, alto: 12 },
   aislador_remate: { ancho: 17, alto: 4 },
   cortacircuito_fusible: { ancho: 9, alto: 23 },
-  retenida_ancla: { ancho: 156, alto: 336 },
+  retenida_ancla: { ancho: 30, alto: 64 },
   riostra_secundaria: { ancho: 9, alto: 19 },
   apartarrayos: { ancho: 7, alto: 15 },
   transformador: { ancho: 21, alto: 29 },

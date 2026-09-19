@@ -19,7 +19,7 @@ const COMPONENTES_EJEMPLO: PosteComponenteDTO[] = [
   { id: 2, componente_visual_codigo: "aislador_pin", modo: "auto", x: -30, y: 44, rotacion: 0, espejo: false, orden_z: 2 },
   { id: 3, componente_visual_codigo: "aislador_pin", modo: "auto", x: 0, y: 44, rotacion: 0, espejo: false, orden_z: 2 },
   { id: 4, componente_visual_codigo: "aislador_pin", modo: "auto", x: 30, y: 44, rotacion: 0, espejo: false, orden_z: 2 },
-  { id: 5, componente_visual_codigo: "retenida_ancla", modo: "manual", x: 60, y: 250, rotacion: 20, espejo: false, orden_z: 0 },
+  { id: 5, componente_visual_codigo: "retenida_ancla", modo: "manual", x: 50, y: 150, rotacion: 35, espejo: false, orden_z: 0 },
 ];
 
 function SimboloIndividual({ codigo }: { codigo: string }) {
