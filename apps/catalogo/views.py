@@ -17,7 +17,7 @@ class EstructuraCFEViewSet(ReadOnlyModelViewSet):
 
 
 class MaterialViewSet(ReadOnlyModelViewSet):
-    queryset = Material.objects.all()
+    queryset = Material.objects.select_related("componente_visual")
     serializer_class = MaterialSerializer
 
 

@@ -5,7 +5,9 @@ import type {
   DatosPoste,
   DesglosePoste,
   EstructuraCFE,
+  EstructuraNormativa,
   ListaMateriales,
+  MaterialCatalogo,
   NuevoProyecto,
   OpcionesPoste,
   PosteComponente,
@@ -59,6 +61,13 @@ export const generarPostesDePaso = (tramoId: number, estructuraId?: number) =>
   api<unknown>(`/api/proyectos/tramos/${tramoId}/generar-postes-de-paso/`, {
     method: "POST",
     json: estructuraId ? { estructura_id: estructuraId } : {},
+  });
+
+/** Agrega postes ancla por coordenadas ([lng, lat]) a continuación de los existentes; es todo o nada. */
+export const agregarPostesPorCoordenadas = (tramoId: number, puntos: [number, number][], datos: DatosPoste) =>
+  api<{ creados: number; ids: number[] }>(`/api/proyectos/tramos/${tramoId}/agregar-postes/`, {
+    method: "POST",
+    json: { puntos, ...datos },
   });
 
 export const generarVanos = (tramoId: number) =>
@@ -123,3 +132,5 @@ export const listarEstructuras = () => api<EstructuraCFE[]>("/api/catalogo/estru
 export const listarComponentesVisuales = () => api<ComponenteVisual[]>("/api/catalogo/componentes-visuales/");
 export const listarPrefijos = () => api<PrefijoEstructura[]>("/api/reglas/prefijos-estructura/");
 export const obtenerOpcionesPoste = () => api<OpcionesPoste>("/api/reglas/opciones-poste/");
+export const listarEstructurasNormativas = () => api<EstructuraNormativa[]>("/api/reglas/estructuras-mt/");
+export const listarMaterialesCatalogo = () => api<MaterialCatalogo[]>("/api/catalogo/materiales/");

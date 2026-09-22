@@ -1,11 +1,12 @@
 // src/pages/ProyectoVista.tsx — editor de mapa (mockup 1b) con el modal de configuración de poste (1c)
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { FileText, MousePointer2, Route, Spline, TowerControl, X } from 'lucide-react'
+import { FileText, MapPinned, MousePointer2, Route, Spline, TowerControl, X } from 'lucide-react'
 import {
   actualizarPoste,
   actualizarProyecto,
   actualizarTramo,
+  agregarPostesPorCoordenadas,
   borrarPoste,
   crearPoste,
   generarPostesDePaso,
@@ -18,6 +19,7 @@ import {
   obtenerProyecto,
 } from '../api/proyectos'
 import type { DatosPoste, EstadoProyecto, EstructuraCFE } from '../api/tipos'
+import ModalCoordenadas from '../components/ModalCoordenadas'
 import BarraProyecto from '../components/BarraProyecto'
 import MapaTramo, { BASES, type BaseMapa, type Herramienta } from '../components/MapaTramo'
 import ModalPoste from '../components/ModalPoste'
@@ -62,6 +64,8 @@ export default function ProyectoVista() {
 
   const [seleccionadoId, setSeleccionadoId] = useState<number | null>(null)
   const [modalAbierto, setModalAbierto] = useState(false)
+  const [coordenadasAbierto, setCoordenadasAbierto] = useState(false)
+  const [enfoque, setEnfoque] = useState<{ clave: number; puntos: [number, number][] } | null>(null)
   const [herramienta, setHerramienta] = useState<Herramienta>('seleccionar')
   const [base, setBase] = useState<BaseMapa>('satelite')
   const [mostrarVanos, setMostrarVanos] = useState(true)
@@ -127,6 +131,29 @@ export default function ProyectoVista() {
       const creado = await crearPoste(tramoId, posicion, datos)
       setSeleccionadoId(creado.properties.id)
       if (herramienta === 'poste') setHerramienta('seleccionar')
+    })
+  }
+
+  /** Crea los postes de la ventana de coordenadas. Lanza si falla, para que la ventana muestre el error. */
+  const crearPorCoordenadas = async (puntos: [number, number][], estructuraId: number) => {
+    if (tramoId === undefined) return
+    const ultimo = ordenados.at(-1)
+    await agregarPostesPorCoordenadas(tramoId, puntos, {
+      estructura_id: estructuraId,
+      altura_m: ultimo?.alturaM ?? 12,
+      resistencia_kg: ultimo?.resistenciaKg ?? 750,
+      tipo_terreno: ultimo?.tipoTerreno ?? 'normal',
+    })
+    recargar()
+    recargarProyecto()
+    setEnfoque({ clave: Date.now(), puntos: [...ordenados.map((p) => p.posicion), ...puntos] })
+  }
+
+  const moverACoordenadas = (posicion: [number, number]) => {
+    if (!seleccionado) return
+    void ejecutar(async () => {
+      await moverPoste(seleccionado.id, posicion)
+      setEnfoque({ clave: Date.now(), puntos: [posicion] })
     })
   }
 
@@ -331,6 +358,25 @@ export default function ProyectoVista() {
           <hr className="hr" style={{ margin: '14px 16px' }} />
 
           <div className="px-4">
+            <h6 style={{ margin: '0 0 8px' }}>Coordenadas</h6>
+            <button
+              type="button"
+              className="btn btn-secondary btn-block"
+              style={{ marginTop: 0 }}
+              disabled={nuevaId === null}
+              onClick={() => setCoordenadasAbierto(true)}
+            >
+              <MapPinned size={15} strokeWidth={1.8} />
+              Ingresar postes por coordenadas
+            </button>
+            <div className="text-muted" style={{ fontSize: 11.5, marginTop: 6 }}>
+              Opcional: solo inicio y fin, o todos los puntos. Para mover un poste existente, selecciónalo y edita su ubicación.
+            </div>
+          </div>
+
+          <hr className="hr" style={{ margin: '14px 16px' }} />
+
+          <div className="px-4">
             <h6 style={{ margin: '0 0 8px' }}>Postes de paso</h6>
             <SelectorEstructura
               aria-label="Estructura de los postes de paso"
@@ -389,6 +435,7 @@ export default function ProyectoVista() {
             onColocar={colocar}
             onMover={(posteId, posicion) => void ejecutar(() => moverPoste(posteId, posicion))}
             onCentro={setCentro}
+            enfoque={enfoque}
           />
 
           {(herramienta !== 'seleccionar' || postes.length === 0) && (
@@ -435,6 +482,7 @@ export default function ProyectoVista() {
               vanoSiguienteM={vano(seleccionado, siguiente)}
               ocupado={ocupado}
               onCambiar={(cambios) => void ejecutar(() => actualizarPoste(seleccionado.id, cambios))}
+              onMoverACoordenadas={moverACoordenadas}
               onConfigurar={() => setModalAbierto(true)}
               onAplicarATramo={aplicarATramo}
               onEliminar={eliminar}
@@ -475,6 +523,18 @@ export default function ProyectoVista() {
           )}
         </div>
       </div>
+
+      {coordenadasAbierto && (
+        <ModalCoordenadas
+          tramoVacio={ordenados.length === 0}
+          ultimoPoste={ordenados.length ? codigoPoste(ordenados[ordenados.length - 1].orden) : null}
+          estructuras={estructuras}
+          prefijos={prefijos}
+          estructuraInicialId={nuevaId}
+          onCrear={crearPorCoordenadas}
+          onCerrar={() => setCoordenadasAbierto(false)}
+        />
+      )}
 
       {modalAbierto && seleccionado && (
         <ModalPoste

@@ -51,3 +51,18 @@ export function formatearCoordenadas([lng, lat]: [number, number], decimales = 5
 
 /** Código de poste como en el mockup: P-05. */
 export const codigoPoste = (orden: number) => `P-${String(orden).padStart(2, "0")}`;
+
+/** "0°–5°", "15°–…", o "—" si la estructura no restringe la deflexión. */
+export function formatearRangoAngulo(min: number | null, max: number | null): string {
+  if (min === null && max === null) return "—";
+  return `${min ?? 0}°–${max ?? "…"}°`;
+}
+
+export const ETIQUETA_CATEGORIA: Record<string, string> = {
+  paso_simple: "Paso simple",
+  paso_doble: "Paso doble / deflexión moderada",
+  deflexion: "Deflexión",
+  remate: "Remate",
+  anclaje: "Anclaje en línea",
+  subestacion: "Entrada/salida de subestación",
+};
