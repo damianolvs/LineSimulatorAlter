@@ -9,6 +9,7 @@ from .serializers import (
     PosteComponenteSerializer,
     PosteModuloSerializer,
     PosteSerializer,
+    PostesPorCoordenadasSerializer,
     ProyectoSerializer,
     TramoSerializer,
     VanoSerializer,
@@ -17,6 +18,7 @@ from apps.catalogo.models import EstructuraCFE
 from apps.reglas.services import desglose_estructura
 
 from .services import (
+    agregar_postes_por_coordenadas,
     generar_postes_de_paso,
     calcular_materiales_proyecto,
     generar_vanos,
@@ -61,6 +63,15 @@ class TramoViewSet(ModelViewSet):
         # Solo un resumen: serializar todos los postes (con sus ángulos) es lento y el cliente los pide aparte.
         return Response({"total": len(postes), "pasos": sum(1 for p in postes if not p.es_ancla)})
 
+    @action(detail=True, methods=["post"], url_path="agregar-postes")
+    def agregar_postes_action(self, request, pk=None):
+        """Agrega postes ancla por coordenadas [lng, lat], a continuación de los existentes."""
+        tramo = self.get_object()
+        datos = PostesPorCoordenadasSerializer(data=request.data)
+        datos.is_valid(raise_exception=True)
+        postes = agregar_postes_por_coordenadas(tramo, **datos.validated_data)
+        return Response({"creados": len(postes), "ids": [p.id for p in postes]}, status=201)
+
     @action(detail=True, methods=["post"], url_path="generar-vanos")
     def generar_vanos_action(self, request, pk=None):
         tramo = self.get_object()
@@ -87,7 +98,11 @@ class PosteViewSet(ModelViewSet):
 
     def perform_update(self, serializer):
         estructura_anterior = serializer.instance.estructura_id
-        poste = serializer.save()
+        posicion_anterior = serializer.instance.geom.coords
+        nueva = serializer.validated_data.get("geom")
+        # Fijar a mano la posición de un poste de paso lo vuelve ancla: así sobrevive a regenerar los de paso.
+        movido = nueva is not None and any(abs(a - b) > 1e-9 for a, b in zip(nueva.coords, posicion_anterior))
+        poste = serializer.save(es_ancla=True) if movido else serializer.save()
         if poste.estructura_id != estructura_anterior:
             resolver_layout_poste(poste)
         sincronizar_geom_tramo(poste.tramo)

@@ -40,6 +40,8 @@ interface Props {
   onMover: (id: number, posicion: [number, number]) => void;
   /** Centro actual del mapa como [lng, lat], para el pie del panel de herramientas. */
   onCentro: (centro: [number, number]) => void;
+  /** Pide encuadrar puntos ([lng, lat]) en el mapa; cada valor nuevo de `clave` dispara un encuadre. */
+  enfoque: { clave: number; puntos: [number, number][] } | null;
 }
 
 const aLatLng = ([lng, lat]: [number, number]): [number, number] => [lat, lng];
@@ -80,6 +82,23 @@ function AjustarVista({ postes }: { postes: PosteConIcono[] }) {
     ajustado.current = true;
     map.fitBounds(L.latLngBounds(postes.map((p) => aLatLng(p.posicion))), { padding: [60, 60], maxZoom: 17 });
   }, [postes, map]);
+  return null;
+}
+
+/** Lleva la vista a los puntos pedidos: un punto se centra acercando; varios se encuadran. */
+function EnfocarVista({ enfoque }: { enfoque: Props["enfoque"] }) {
+  const map = useMap();
+  const clave = enfoque?.clave;
+  useEffect(() => {
+    if (!enfoque || enfoque.puntos.length === 0) return;
+    if (enfoque.puntos.length === 1) {
+      map.flyTo(aLatLng(enfoque.puntos[0]), Math.max(map.getZoom(), 16));
+    } else {
+      map.fitBounds(L.latLngBounds(enfoque.puntos.map(aLatLng)), { padding: [60, 60], maxZoom: 17 });
+    }
+    // Solo cuando llega una petición nueva, no en cada render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clave, map]);
   return null;
 }
 
@@ -154,6 +173,7 @@ export default function MapaTramo({
   onColocar,
   onMover,
   onCentro,
+  enfoque,
 }: Props) {
   const ordenados = useMemo(() => [...postes].sort((a, b) => a.orden - b.orden), [postes]);
   const linea = ordenados.map((p) => aLatLng(p.posicion));
@@ -185,6 +205,7 @@ export default function MapaTramo({
         ))}
         <AjustarVista postes={postes} />
         <SeguirCentro onCentro={onCentro} />
+        <EnfocarVista enfoque={enfoque} />
         <ClicColocar activo={colocando} onColocar={onColocar} />
         <ControlesMapa base={base} onCambiarBase={onCambiarBase} />
         <ScaleControl position="bottomleft" imperial={false} />

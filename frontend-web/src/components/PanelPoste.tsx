@@ -1,9 +1,11 @@
 // frontend-web/src/components/PanelPoste.tsx
-import { Pencil, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { MapPin, Pencil, Trash2 } from "lucide-react";
 import type { DatosPoste, EstructuraCFE, OpcionesPoste, PrefijoEstructura } from "../api/tipos";
 import type { PosteConIcono } from "../hooks/useTramoConPostes";
-import { codigoPoste, formatearCoordenadas, formatearNumero } from "../lib/formato";
-import { ETIQUETA_CATEGORIA } from "./SelectorEstructura";
+import CampoCoordenadas from "./CampoCoordenadas";
+import { gradoATexto, validarPar } from "../lib/coordenadas";
+import { ETIQUETA_CATEGORIA, codigoPoste, formatearCoordenadas, formatearNumero } from "../lib/formato";
 import SelectorEstructura from "./SelectorEstructura";
 
 interface Props {
@@ -16,6 +18,8 @@ interface Props {
   vanoSiguienteM: number | null;
   ocupado: boolean;
   onCambiar: (cambios: Partial<DatosPoste>) => void;
+  /** Fija la posición del poste por coordenadas ([lng, lat]). */
+  onMoverACoordenadas: (posicion: [number, number]) => void;
   onConfigurar: () => void;
   onAplicarATramo: () => void;
   onEliminar: () => void;
@@ -38,6 +42,58 @@ function notaDeflexion(poste: PosteConIcono): { texto: string; alerta: boolean }
 
 const fila = "flex items-center gap-2 px-[9px] py-1.5 text-[13px]";
 
+/** Ubicación del poste editable por coordenadas. Se remonta al cambiar el poste o su posición. */
+function SeccionUbicacion({
+  poste,
+  ocupado,
+  onMover,
+}: {
+  poste: PosteConIcono;
+  ocupado: boolean;
+  onMover: (posicion: [number, number]) => void;
+}) {
+  const [lng0, lat0] = poste.posicion;
+  const [lat, setLat] = useState(gradoATexto(lat0));
+  const [lng, setLng] = useState(gradoATexto(lng0));
+  const par = validarPar(lat, lng);
+  const cambio =
+    par.estado === "ok" && (gradoATexto(par.lat) !== gradoATexto(lat0) || gradoATexto(par.lng) !== gradoATexto(lng0));
+  const aplicar = () => par.estado === "ok" && cambio && onMover([par.lng, par.lat]);
+
+  return (
+    <div>
+      <h6 style={{ margin: "0 0 8px" }}>Ubicación</h6>
+      <div className="flex flex-col gap-2">
+        <CampoCoordenadas
+          etiqueta="Ubicación del poste"
+          lat={lat}
+          lng={lng}
+          disabled={ocupado}
+          onChange={(a, o) => {
+            setLat(a);
+            setLng(o);
+          }}
+          onEnter={aplicar}
+        />
+        {par.estado === "error" && (
+          <div role="alert" style={{ fontSize: 12, color: "var(--color-accent-700)" }}>
+            {par.mensaje}
+          </div>
+        )}
+        <button type="button" className="btn btn-secondary" disabled={ocupado || !cambio} onClick={aplicar}>
+          <MapPin size={14} strokeWidth={1.8} />
+          Mover a estas coordenadas
+        </button>
+        {!poste.esAncla && (
+          <div className="text-muted" style={{ fontSize: 11 }}>
+            Al fijar su posición, este poste de paso pasa a ser ancla y se conserva al regenerar los postes de paso.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function PanelPoste({
   poste,
   estructuras,
@@ -47,6 +103,7 @@ export default function PanelPoste({
   vanoSiguienteM,
   ocupado,
   onCambiar,
+  onMoverACoordenadas,
   onConfigurar,
   onAplicarATramo,
   onEliminar,
@@ -151,6 +208,13 @@ export default function PanelPoste({
             </tbody>
           </table>
         </div>
+
+        <SeccionUbicacion
+          key={`${poste.id}-${poste.posicion[0]}-${poste.posicion[1]}`}
+          poste={poste}
+          ocupado={ocupado}
+          onMover={onMoverACoordenadas}
+        />
 
         <div>
           <h6 style={{ margin: "0 0 8px" }}>Poste</h6>

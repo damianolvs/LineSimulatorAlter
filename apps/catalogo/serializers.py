@@ -15,9 +15,11 @@ from .models import (
 
 
 class MaterialSerializer(serializers.ModelSerializer):
+    componente_visual_codigo = serializers.CharField(source="componente_visual.codigo", read_only=True, default=None)
+
     class Meta:
         model = Material
-        fields = ["id", "codigo", "nombre", "unidad", "cantidad_estimada"]
+        fields = ["id", "codigo", "nombre", "unidad", "cantidad_estimada", "componente_visual_codigo"]
 
 
 class EstructuraCFEMaterialSerializer(serializers.ModelSerializer):

@@ -139,6 +139,26 @@ class PosteSerializer(GeoFeatureModelSerializer):
         return super().create(validated_data)
 
 
+class PostesPorCoordenadasSerializer(serializers.Serializer):
+    """Cuerpo de `tramos/<id>/agregar-postes/`: puntos [lng, lat] y los datos comunes de los postes nuevos."""
+    puntos = serializers.ListField(
+        child=serializers.ListField(child=serializers.FloatField(), min_length=2, max_length=2),
+        min_length=1, max_length=500,
+    )
+    estructura_id = serializers.PrimaryKeyRelatedField(queryset=EstructuraCFE.objects.all(), source="estructura")
+    altura_m = serializers.FloatField(required=False, default=12.0, min_value=1)
+    resistencia_kg = serializers.IntegerField(required=False, default=750, min_value=1)
+    tipo_terreno = serializers.ChoiceField(choices=Poste.TERRENO_CHOICES, required=False, default="normal")
+
+    def validate_puntos(self, puntos):
+        for i, (lng, lat) in enumerate(puntos, start=1):
+            if not (-180 <= lng <= 180 and -90 <= lat <= 90):
+                raise serializers.ValidationError(
+                    f"El punto {i} está fuera de rango (longitud ±180°, latitud ±90°)."
+                )
+        return puntos
+
+
 class VanoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vano

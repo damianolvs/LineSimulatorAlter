@@ -9,7 +9,9 @@ from .serializers import EstructuraMTSerializer, PrefijoEstructuraMTSerializer
 
 class EstructuraMTViewSet(ReadOnlyModelViewSet):
     """Catálogo de estructuras de media tensión. Solo lectura: se administra desde /admin/."""
-    queryset = EstructuraMT.objects.select_related("prefijo").prefetch_related("materiales__material").all()
+    queryset = EstructuraMT.objects.select_related("prefijo", "fuente").prefetch_related(
+        "materiales__material", "materiales__fuente"
+    )
     serializer_class = EstructuraMTSerializer
 
 

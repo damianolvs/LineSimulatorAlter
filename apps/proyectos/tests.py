@@ -175,3 +175,69 @@ class FlujoProyectoTests(APITestCase):
         self.assertEqual(resp.status_code, 400)
         self.assertFalse(Poste.objects.filter(tramo_id=tramo_id).exists())
 
+    def test_agregar_postes_por_coordenadas_crea_anclas_en_orden(self):
+        tramo_id = self._crear_proyecto()["tramo_ids"][0]
+        estructura_id = EstructuraCFE.objects.get(codigo="TS3N").id
+        resp = self.client.post(
+            f"/api/proyectos/tramos/{tramo_id}/agregar-postes/",
+            {"estructura_id": estructura_id, "puntos": [[-106.0, 28.6], [-105.99, 28.61]]},
+            format="json",
+        )
+        self.assertEqual(resp.status_code, 201, resp.content)
+        self.assertEqual(resp.json()["creados"], 2)
+        postes = list(Poste.objects.filter(tramo_id=tramo_id).order_by("orden"))
+        self.assertEqual([p.orden for p in postes], [1, 2])
+        self.assertTrue(all(p.es_ancla and p.componentes.count() == 4 for p in postes))
+        self.assertEqual(postes[1].geom.coords, (-105.99, 28.61))
+        self.assertEqual(Tramo.objects.get(pk=tramo_id).geom.num_points, 2)
+
+        # Un segundo lote continúa la numeración.
+        self.client.post(
+            f"/api/proyectos/tramos/{tramo_id}/agregar-postes/",
+            {"estructura_id": estructura_id, "puntos": [[-105.98, 28.62]]}, format="json",
+        )
+        self.assertEqual(Poste.objects.filter(tramo_id=tramo_id).order_by("orden").last().orden, 3)
+
+    def test_agregar_postes_por_coordenadas_es_todo_o_nada(self):
+        tramo_id = self._crear_proyecto()["tramo_ids"][0]
+        estructura_id = EstructuraCFE.objects.get(codigo="TS3N").id
+        resp = self.client.post(
+            f"/api/proyectos/tramos/{tramo_id}/agregar-postes/",
+            {"estructura_id": estructura_id, "puntos": [[-106.0, 28.6], [-468.7, 28.6]]},
+            format="json",
+        )
+        self.assertEqual(resp.status_code, 400)
+        self.assertIn("punto 2", str(resp.json()))
+        self.assertFalse(Poste.objects.filter(tramo_id=tramo_id).exists())
+
+    def test_mover_poste_de_paso_lo_vuelve_ancla_y_sobrevive_a_regenerar(self):
+        tramo_id = self._crear_proyecto(vano_maximo=100)["tramo_ids"][0]
+        ts3n = EstructuraCFE.objects.get(codigo="TS3N")
+        for lng in (-106.0, -105.99):
+            self.client.post("/api/proyectos/postes/", _feature(tramo_id, ts3n.id, lng, 28.6, es_ancla=True), format="json")
+        self.client.post(f"/api/proyectos/tramos/{tramo_id}/generar-postes-de-paso/", {"estructura_id": ts3n.id}, format="json")
+
+        paso = Poste.objects.filter(tramo_id=tramo_id, es_ancla=False).order_by("orden").first()
+        resp = self.client.patch(
+            f"/api/proyectos/postes/{paso.id}/",
+            {"geometry": {"type": "Point", "coordinates": [-105.9975, 28.6003]}, "properties": {}},
+            format="json",
+        )
+        self.assertEqual(resp.status_code, 200, resp.content)
+        paso.refresh_from_db()
+        self.assertTrue(paso.es_ancla)
+
+        self.client.post(f"/api/proyectos/tramos/{tramo_id}/generar-postes-de-paso/", {"estructura_id": ts3n.id}, format="json")
+        self.assertTrue(Poste.objects.filter(pk=paso.pk, es_ancla=True).exists())
+
+    def test_editar_datos_sin_mover_no_cambia_el_tipo_de_poste(self):
+        tramo_id = self._crear_proyecto(vano_maximo=100)["tramo_ids"][0]
+        ts3n = EstructuraCFE.objects.get(codigo="TS3N")
+        for lng in (-106.0, -105.99):
+            self.client.post("/api/proyectos/postes/", _feature(tramo_id, ts3n.id, lng, 28.6, es_ancla=True), format="json")
+        self.client.post(f"/api/proyectos/tramos/{tramo_id}/generar-postes-de-paso/", {"estructura_id": ts3n.id}, format="json")
+        paso = Poste.objects.filter(tramo_id=tramo_id, es_ancla=False).first()
+        self.client.patch(f"/api/proyectos/postes/{paso.id}/", {"properties": {"altura_m": 9, "resistencia_kg": 450}}, format="json")
+        paso.refresh_from_db()
+        self.assertFalse(paso.es_ancla)
+

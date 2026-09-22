@@ -147,3 +147,43 @@ export interface ListaMateriales {
   /** Postes cuya estructura aún no tiene reglas normativas: no entran en la lista. */
   sin_reglas: { poste_id: number; orden: number; estructura: string }[];
 }
+
+/** Material que lleva una estructura según su regla normativa. */
+export interface MaterialEstructura {
+  material_nombre: string;
+  material_codigo: string;
+  descripcion: string;
+  cantidad: number;
+  condicion: string;
+  cantidad_estimada: boolean;
+  verificado: boolean;
+  fuente_codigo: string;
+}
+
+/** Estructura del catálogo CFE con su normativa (sección 05 del documento fuente). */
+export interface EstructuraNormativa {
+  id: number;
+  codigo: string;
+  nombre: string;
+  prefijo_codigo: string;
+  categoria: string;
+  angulo_min: number | null;
+  angulo_max: number | null;
+  es_terminal: boolean;
+  descripcion: string;
+  verificado: boolean;
+  fuente_codigo: string;
+  fuente_titulo: string;
+  fuente_pagina: number | null;
+  materiales: MaterialEstructura[];
+}
+
+export interface MaterialCatalogo {
+  id: number;
+  codigo: string;
+  nombre: string;
+  unidad: string;
+  cantidad_estimada: boolean;
+  /** Pieza con la que se dibuja este material sobre el poste; null si no se dibuja. */
+  componente_visual_codigo: string | null;
+}

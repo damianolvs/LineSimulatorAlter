@@ -1,15 +1,6 @@
 // frontend-web/src/components/SelectorEstructura.tsx
 import type { EstructuraCFE, PrefijoEstructura } from "../api/tipos";
 
-export const ETIQUETA_CATEGORIA: Record<string, string> = {
-  paso_simple: "Paso simple",
-  paso_doble: "Paso doble / deflexión moderada",
-  deflexion: "Deflexión",
-  remate: "Remate",
-  anclaje: "Anclaje en línea",
-  subestacion: "Entrada/salida de subestación",
-};
-
 interface Props {
   estructuras: EstructuraCFE[];
   prefijos: PrefijoEstructura[];

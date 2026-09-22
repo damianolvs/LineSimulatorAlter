@@ -28,6 +28,9 @@ const FUENTES_SVG: Record<string, string> = {
   transformador: transformadorSvg,
 };
 
+/** Códigos de componente que ya tienen dibujo en el sprite. */
+export const CODIGOS_CON_DIBUJO = Object.keys(FUENTES_SVG);
+
 function extraerViewBox(svgRaw: string): string {
   const match = svgRaw.match(/viewBox="([^"]+)"/);
   return match ? match[1] : "0 0 100 100";

@@ -3,6 +3,7 @@ import math
 
 from django.contrib.gis.geos import LineString, Point
 from django.db import transaction
+from django.db.models import Max
 from django.utils import timezone
 from pyproj import Transformer
 
@@ -267,6 +268,28 @@ def _resolver_layout_paso_estandar(poste):
         resultado.append(instancia)
 
     return resultado
+
+
+@transaction.atomic
+def agregar_postes_por_coordenadas(tramo, puntos, estructura, altura_m=12.0, resistencia_kg=750, tipo_terreno="normal"):
+    """
+    Crea postes ancla a continuación de los que ya tiene el tramo, uno por punto
+    `(lng, lat)` y en ese orden. Es todo o nada: si algo falla no queda ninguno.
+    """
+    from .models import Poste
+
+    ultimo_orden = tramo.postes.aggregate(m=Max("orden"))["m"] or 0
+    creados = []
+    for i, (lng, lat) in enumerate(puntos, start=1):
+        poste = Poste.objects.create(
+            tramo=tramo, estructura=estructura, orden=ultimo_orden + i, es_ancla=True,
+            geom=Point(lng, lat, srid=4326),
+            altura_m=altura_m, resistencia_kg=resistencia_kg, tipo_terreno=tipo_terreno,
+        )
+        resolver_layout_poste(poste)
+        creados.append(poste)
+    sincronizar_geom_tramo(tramo)
+    return creados
 
 
 def longitud_proyecto_m(proyecto) -> float:
