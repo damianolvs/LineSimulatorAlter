@@ -6,6 +6,7 @@ import type {
   DesglosePoste,
   EstructuraCFE,
   EstructuraNormativa,
+  RevisionEstructura,
   ListaMateriales,
   MaterialCatalogo,
   NuevoProyecto,
@@ -134,3 +135,5 @@ export const listarPrefijos = () => api<PrefijoEstructura[]>("/api/reglas/prefij
 export const obtenerOpcionesPoste = () => api<OpcionesPoste>("/api/reglas/opciones-poste/");
 export const listarEstructurasNormativas = () => api<EstructuraNormativa[]>("/api/reglas/estructuras-mt/");
 export const listarMaterialesCatalogo = () => api<MaterialCatalogo[]>("/api/catalogo/materiales/");
+export const revisarEstructura = (id: number, revision: RevisionEstructura) =>
+  api<EstructuraNormativa>(`/api/reglas/estructuras-mt/${id}/revision/`, { method: "POST", json: revision });

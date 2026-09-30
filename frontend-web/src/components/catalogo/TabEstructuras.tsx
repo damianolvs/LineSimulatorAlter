@@ -1,18 +1,23 @@
 // frontend-web/src/components/catalogo/TabEstructuras.tsx
 import { Fragment, useMemo, useState } from 'react'
-import { Search } from 'lucide-react'
-import type { EstructuraNormativa, PrefijoEstructura } from '../../api/tipos'
+import { ClipboardCheck, Search } from 'lucide-react'
+import type { EstructuraNormativa, MaterialCatalogo, PrefijoEstructura } from '../../api/tipos'
 import { ETIQUETA_CATEGORIA, formatearCantidad, formatearRangoAngulo } from '../../lib/formato'
+import ModalRevisionEstructura from './ModalRevisionEstructura'
 
 interface Props {
   estructuras: EstructuraNormativa[]
   prefijos: PrefijoEstructura[]
+  /** Catálogo de materiales, para agregar líneas al revisar una estructura. */
+  materialesCatalogo: MaterialCatalogo[]
+  /** Se llama tras guardar una revisión para recargar el catálogo. */
+  onCambio: () => void
   /** Código de la estructura seleccionada (viene de la URL) y cómo cambiarla. */
   seleccion: string | null
   onSeleccionar: (codigo: string) => void
 }
 
-function Detalle({ estructura, familia }: { estructura: EstructuraNormativa; familia: string }) {
+function Detalle({ estructura, familia, onRevisar }: { estructura: EstructuraNormativa; familia: string; onRevisar: () => void }) {
   const sinVerificar = estructura.materiales.filter((m) => !m.verificado).length
   return (
     <div
@@ -36,9 +41,14 @@ function Detalle({ estructura, familia }: { estructura: EstructuraNormativa; fam
         )}
         {estructura.es_terminal && <span className="tag tag-neutral">Terminal</span>}
         <span className={`tag ${estructura.verificado ? 'tag-outline' : 'tag-neutral'}`}>
-          {estructura.verificado ? 'Verificada' : 'Por verificar'}
+          {estructura.verificado ? 'Validada' : 'Por validar'}
         </span>
       </div>
+
+      <button type="button" className="btn btn-primary" onClick={onRevisar}>
+        <ClipboardCheck size={15} strokeWidth={2} />
+        {estructura.verificado ? 'Editar estructura' : 'Revisar y validar'}
+      </button>
 
       {estructura.descripcion && <p style={{ margin: 0, fontSize: 13.5 }}>{estructura.descripcion}</p>}
 
@@ -106,7 +116,7 @@ function Detalle({ estructura, familia }: { estructura: EstructuraNormativa; fam
             </table>
             {sinVerificar > 0 && (
               <p className="text-muted" style={{ margin: '8px 0 0', fontSize: 11.5 }}>
-                * {sinVerificar} de {estructura.materiales.length} reglas aún sin confirmar por un técnico contra el PDF. ~
+                * {sinVerificar} de {estructura.materiales.length} reglas aún sin validar por un técnico contra el PDF. ~
                 Cantidad estimada.
               </p>
             )}
@@ -117,10 +127,11 @@ function Detalle({ estructura, familia }: { estructura: EstructuraNormativa; fam
   )
 }
 
-export default function TabEstructuras({ estructuras, prefijos, seleccion, onSeleccionar }: Props) {
+export default function TabEstructuras({ estructuras, prefijos, materialesCatalogo, onCambio, seleccion, onSeleccionar }: Props) {
   const [busqueda, setBusqueda] = useState('')
   const [familia, setFamilia] = useState('')
   const [categoria, setCategoria] = useState('')
+  const [revisando, setRevisando] = useState<EstructuraNormativa | null>(null)
 
   const nombrePrefijo = useMemo(() => new Map(prefijos.map((p) => [p.codigo, p.nombre])), [prefijos])
   const categorias = useMemo(() => [...new Set(estructuras.map((e) => e.categoria).filter(Boolean))].sort(), [estructuras])
@@ -177,7 +188,7 @@ export default function TabEstructuras({ estructuras, prefijos, seleccion, onSel
           ))}
         </select>
         <span className="text-muted ml-auto" style={{ fontSize: 12 }}>
-          {estructuras.length} estructuras · {conMateriales} con materiales · {verificadas} verificadas
+          {estructuras.length} estructuras · {conMateriales} con materiales · {verificadas} validadas
         </span>
       </div>
 
@@ -217,6 +228,7 @@ export default function TabEstructuras({ estructuras, prefijos, seleccion, onSel
                         aria-selected={activa}
                         className="cursor-pointer"
                         onClick={() => onSeleccionar(e.codigo)}
+                        onDoubleClick={() => setRevisando(e)}
                         onKeyDown={(ev) => (ev.key === 'Enter' || ev.key === ' ') && (ev.preventDefault(), onSeleccionar(e.codigo))}
                         style={{ background: activa ? 'color-mix(in srgb, var(--color-accent) 12%, transparent)' : undefined }}
                       >
@@ -249,12 +261,22 @@ export default function TabEstructuras({ estructuras, prefijos, seleccion, onSel
 
         <div className="sticky top-4">
           {actual ? (
-            <Detalle estructura={actual} familia={nombrePrefijo.get(actual.prefijo_codigo) ?? ''} />
+            <Detalle estructura={actual} familia={nombrePrefijo.get(actual.prefijo_codigo) ?? ''} onRevisar={() => setRevisando(actual)} />
           ) : (
             <p className="text-muted">Elige una estructura para ver su detalle.</p>
           )}
         </div>
       </div>
+
+      {revisando && (
+        <ModalRevisionEstructura
+          key={revisando.id}
+          estructura={revisando}
+          materiales={materialesCatalogo}
+          onGuardado={onCambio}
+          onCerrar={() => setRevisando(null)}
+        />
+      )}
     </div>
   )
 }

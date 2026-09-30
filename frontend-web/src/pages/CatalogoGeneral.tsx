@@ -28,7 +28,7 @@ export default function CatalogoGeneral() {
   const vista: Vista = esVista(params.get('vista')) ? (params.get('vista') as Vista) : 'estructuras'
   const seleccion = params.get('e')
 
-  const { datos, cargando, error } = useCargar(
+  const { datos, cargando, error, recargar } = useCargar(
     () =>
       Promise.all([
         listarEstructurasNormativas(),
@@ -84,6 +84,8 @@ export default function CatalogoGeneral() {
         <TabEstructuras
           estructuras={estructuras}
           prefijos={prefijos}
+          materialesCatalogo={materiales}
+          onCambio={recargar}
           seleccion={seleccion}
           onSeleccionar={(codigo) => irA('estructuras', codigo)}
         />

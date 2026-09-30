@@ -150,6 +150,9 @@ export interface ListaMateriales {
 
 /** Material que lleva una estructura según su regla normativa. */
 export interface MaterialEstructura {
+  /** Id de la regla (línea de material de la estructura). */
+  id: number;
+  material_id: number | null;
   material_nombre: string;
   material_codigo: string;
   descripcion: string;
@@ -186,4 +189,26 @@ export interface MaterialCatalogo {
   cantidad_estimada: boolean;
   /** Pieza con la que se dibuja este material sobre el poste; null si no se dibuja. */
   componente_visual_codigo: string | null;
+}
+
+/** Línea de material en la revisión: con `id` modifica la regla existente, sin `id` crea una nueva. */
+export interface LineaRevision {
+  id?: number;
+  material: number;
+  descripcion: string;
+  cantidad: number;
+  condicion: string;
+  cantidad_estimada: boolean;
+}
+
+/** Datos con los que el técnico corrige una estructura; `validar` la marca como verificada. */
+export interface RevisionEstructura {
+  nombre: string;
+  categoria: string;
+  angulo_min: number | null;
+  angulo_max: number | null;
+  es_terminal: boolean;
+  descripcion: string;
+  materiales: LineaRevision[];
+  validar: boolean;
 }
