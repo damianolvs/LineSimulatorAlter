@@ -1,5 +1,5 @@
 // frontend-web/src/components/MapaTramo.tsx
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, Polyline, ScaleControl, TileLayer, useMap, useMapEvents } from "react-leaflet";
@@ -7,6 +7,7 @@ import type { PosteConIcono } from "../hooks/useTramoConPostes";
 import { codigoPoste } from "../lib/formato";
 import { distanciaM } from "../lib/geo";
 import { iconoPosteMapa, iconoVano } from "../lib/iconoPosteMapa";
+import { alturaPosteMapa } from "../lib/tamanoPosteMapa";
 
 export type BaseMapa = "satelite" | "hibrido" | "topografico";
 export type Herramienta = "seleccionar" | "trazar" | "poste";
@@ -54,6 +55,13 @@ function ClicColocar({ activo, onColocar }: { activo: boolean; onColocar: Props[
       if (activo) onColocar([lng, lat]);
     },
   });
+  return null;
+}
+
+/** Avisa del zoom actual (y de cada cambio) para que los postes se dibujen a su tamaño. */
+function SeguirZoom({ onZoom }: { onZoom: (zoom: number) => void }) {
+  const map = useMapEvents({ zoomend: () => onZoom(map.getZoom()) });
+  useEffect(() => onZoom(map.getZoom()), [map, onZoom]);
   return null;
 }
 
@@ -178,6 +186,8 @@ export default function MapaTramo({
   const ordenados = useMemo(() => [...postes].sort((a, b) => a.orden - b.orden), [postes]);
   const linea = ordenados.map((p) => aLatLng(p.posicion));
   const colocando = herramienta !== "seleccionar";
+  const [zoom, setZoom] = useState(13);
+  const altoPoste = alturaPosteMapa(zoom);
 
   const vanos = useMemo(
     () =>
@@ -205,6 +215,7 @@ export default function MapaTramo({
         ))}
         <AjustarVista postes={postes} />
         <SeguirCentro onCentro={onCentro} />
+        <SeguirZoom onZoom={setZoom} />
         <EnfocarVista enfoque={enfoque} />
         <ClicColocar activo={colocando} onColocar={onColocar} />
         <ControlesMapa base={base} onCambiarBase={onCambiarBase} />
@@ -247,6 +258,7 @@ export default function MapaTramo({
                 componentes: p.componentes,
                 seleccionado,
                 etiqueta: mostrarTexto ? `${codigoPoste(p.orden)} · ${p.estructura.codigo}` : "",
+                alto: altoPoste,
               })}
               zIndexOffset={seleccionado ? 1000 : 0}
               draggable={herramienta === "seleccionar"}

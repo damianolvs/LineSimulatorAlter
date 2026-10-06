@@ -1,6 +1,7 @@
 // frontend-web/src/lib/iconoPosteMapa.ts
 import L from "leaflet";
 import type { PosteComponente } from "../api/tipos";
+import { PROPORCION_POSTE } from "./tamanoPosteMapa";
 
 const POSICION_AISLADORES: Record<number, number[]> = { 1: [8.5], 2: [2.6, 14.4], 3: [2.6, 8.5, 14.4] };
 
@@ -9,6 +10,8 @@ interface Opciones {
   seleccionado: boolean;
   /** Texto bajo el poste (p. ej. "P-05 · TS3N"); vacío = sin etiqueta. */
   etiqueta: string;
+  /** Altura del dibujo en px (ver `alturaPosteMapa`); el ancho y los adornos se escalan con ella. */
+  alto: number;
 }
 
 /**
@@ -47,16 +50,23 @@ const escapar = (texto: string) => texto.replace(/[&<>"]/g, (c) => `&#${c.charCo
  * `iconSize` 0×0 con el anclaje en el punto exacto: el pie del poste queda sobre
  * la coordenada y la etiqueta cuelga debajo, sin desplazar al marcador.
  */
-export function iconoPosteMapa({ componentes, seleccionado, etiqueta }: Opciones): L.DivIcon {
+export function iconoPosteMapa({ componentes, seleccionado, etiqueta, alto }: Opciones): L.DivIcon {
+  const k = alto / 27; // 1 = tamaño original del dibujo
+  const altoPoste = Math.round(seleccionado ? alto * 1.25 : alto);
+  const anchoPoste = Math.round(altoPoste * PROPORCION_POSTE);
+  const aro = Math.round(46 * k);
+  const elipse = Math.round(30 * k);
   const poste = seleccionado
-    ? `<span style="position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);width:46px;height:46px;border-radius:50%;border:2px solid #b68235;background:rgba(182,130,53,.16);box-shadow:0 0 0 3px rgba(240,226,200,.35)"></span>` +
-      `<span style="position:absolute;left:50%;bottom:-3px;transform:translateX(-50%);width:30px;height:12px;border-radius:50%;border:1px dashed rgba(240,226,200,.7)"></span>` +
-      svgPoste(componentes, 22, 34)
-    : svgPoste(componentes, 17, 27);
+    ? `<span style="position:absolute;left:50%;bottom:${Math.round(-9 * k)}px;transform:translateX(-50%);width:${aro}px;height:${aro}px;border-radius:50%;border:2px solid #b68235;background:rgba(182,130,53,.16);box-shadow:0 0 0 3px rgba(240,226,200,.35)"></span>` +
+      `<span style="position:absolute;left:50%;bottom:${Math.round(-3 * k)}px;transform:translateX(-50%);width:${elipse}px;height:${Math.round(12 * k)}px;border-radius:50%;border:1px dashed rgba(240,226,200,.7)"></span>` +
+      svgPoste(componentes, anchoPoste, altoPoste)
+    : svgPoste(componentes, anchoPoste, altoPoste);
 
+  const fuente = Math.round(Math.min(12.5, Math.max(9.5, 8.5 + k * 1.3)) * 10) / 10;
+  const margen = Math.round(2 * k);
   const estiloEtiqueta = seleccionado
-    ? "background:#b68235;color:#1d1b18;font-size:10px;font-weight:600;padding:1px 5px;margin-top:12px"
-    : "background:rgba(25,23,20,.8);color:#f4ead8;font-size:9.5px;padding:1px 4px;margin-top:2px";
+    ? `background:#b68235;color:#1d1b18;font-size:${fuente + 0.5}px;font-weight:600;padding:1px 5px;margin-top:${Math.round(12 * k)}px`
+    : `background:rgba(25,23,20,.8);color:#f4ead8;font-size:${fuente}px;padding:1px 4px;margin-top:${margen}px`;
   const textoEtiqueta = etiqueta
     ? `<span style="position:absolute;left:0;top:0;transform:translateX(-50%);white-space:nowrap;border-radius:2px;font-variant-numeric:tabular-nums;${estiloEtiqueta}">${escapar(etiqueta)}</span>`
     : "";

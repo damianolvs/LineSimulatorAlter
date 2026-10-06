@@ -10,6 +10,7 @@ import {
 import type { ComponenteVisual, EstructuraCFE, PosteComponente, PrefijoEstructura } from "../api/tipos";
 import type { PosteConIcono } from "../hooks/useTramoConPostes";
 import { codigoPoste } from "../lib/formato";
+import { alturaSobrePisoM, ordenarComponentes, type ModoVista } from "../lib/vistaPoste";
 import PosteDesglose from "./PosteDesglose";
 import PosteDiagrama from "./PosteDiagrama";
 import SelectorEstructura from "./SelectorEstructura";
@@ -110,6 +111,8 @@ export default function ModalPoste({
   onError,
 }: Props) {
   const [seleccionadoId, setSeleccionadoId] = useState<number | null>(null);
+  const [resaltadoId, setResaltadoId] = useState<number | null>(null);
+  const [modoVista, setModoVista] = useState<ModoVista>("herraje");
   const [agregando, setAgregando] = useState(false);
   const [nuevoId, setNuevoId] = useState<number | "">("");
   const [ocupado, setOcupado] = useState(false);
@@ -135,7 +138,9 @@ export default function ModalPoste({
   };
 
   const manuales = poste.componentes.filter((c) => c.modo === "manual");
-  const ordenados = [...poste.componentes].sort((a, b) => a.y - b.y || a.x - b.x);
+  const ordenados = ordenarComponentes(poste.componentes);
+  const seleccionado = poste.componentes.find((c) => c.id === seleccionadoId) ?? null;
+  const alturaSeleccion = seleccionado ? alturaSobrePisoM(seleccionado.y, poste.alturaM, poste.empotramientoCm) : null;
   const sugeridas = alternativas(poste, estructuras);
   const mt = poste.estructura.estructura_mt;
   const angulo = poste.anguloDeflexion;
@@ -225,27 +230,55 @@ export default function ModalPoste({
         <div className="flex min-h-0 flex-1">
           {/* Diagrama */}
           <div
-            className="flex w-[430px] flex-none flex-col"
+            className="flex w-[500px] flex-none flex-col"
             style={{ borderRight: "1px solid var(--color-divider)", background: "var(--color-surface)" }}
           >
             <div className="flex items-center gap-2.5 px-[18px] pt-3.5">
               <h6 style={{ margin: 0 }}>Diagrama de estructura</h6>
-              <span className="text-muted num ml-auto" style={{ fontSize: 11 }}>
-                vista lateral · {poste.alturaM} m
-              </span>
+              <div className="seg ml-auto" role="radiogroup" aria-label="Vista del diagrama">
+                {(["herraje", "completo"] as const).map((valor) => (
+                  <label key={valor} className="seg-opt">
+                    <input type="radio" name="vista-diagrama" checked={modoVista === valor} onChange={() => setModoVista(valor)} />
+                    {valor === "herraje" ? "Herraje" : `Poste ${poste.alturaM} m`}
+                  </label>
+                ))}
+              </div>
             </div>
-            <div className="min-h-[420px] flex-1 px-4 py-2">
+            <div className="min-h-[460px] flex-1 px-4 py-2">
               <PosteDiagrama
                 componentes={poste.componentes}
                 empotramientoCm={poste.empotramientoCm}
                 alturaM={poste.alturaM}
                 seleccionadoId={seleccionadoId}
+                modo={modoVista}
+                resaltadoId={resaltadoId}
+                onResaltar={setResaltadoId}
                 onSeleccionar={setSeleccionadoId}
                 onMover={(id, x, y) => {
                   const c = poste.componentes.find((k) => k.id === id);
                   if (c) void mover(c, { x, y });
                 }}
               />
+            </div>
+            <div
+              className="num mx-[18px] mb-1 flex min-h-[34px] items-center gap-3 px-3 py-1.5"
+              style={{ fontSize: 12, border: "1px solid var(--color-divider)", borderRadius: "var(--radius-md)", background: "var(--color-neutral-100)" }}
+              aria-live="polite"
+            >
+              {seleccionado ? (
+                <>
+                  <strong style={{ fontFamily: "var(--font-heading)", fontSize: 14 }}>{seleccionado.componente_visual.nombre}</strong>
+                  <span className="text-muted">
+                    x {seleccionado.x} · y {seleccionado.y}
+                    {alturaSeleccion !== null && ` · ${alturaSeleccion.toFixed(2)} m sobre piso`}
+                  </span>
+                  <span className="text-muted ml-auto" style={{ fontSize: 11 }}>
+                    flechas = mover · Mayús = ×5
+                  </span>
+                </>
+              ) : (
+                <span className="text-muted">Selecciona una pieza en el diagrama o en la tabla. Arrástrala o usa las flechas del teclado.</span>
+              )}
             </div>
             <div className="text-muted flex gap-4 px-[18px] pb-4 pt-2.5" style={{ fontSize: 11.5 }}>
               <span className="flex items-center gap-1.5">
@@ -354,31 +387,41 @@ export default function ModalPoste({
                 <table className="table">
                   <thead>
                     <tr>
+                      <th style={{ width: 26 }}>#</th>
                       <th style={{ width: 34 }} />
                       <th>Componente</th>
                       <th>Código</th>
                       <th>Posición (x, y)</th>
+                      <th style={{ textAlign: "right" }}>Sobre piso</th>
                       <th>Origen</th>
                       <th style={{ width: 44 }} />
                     </tr>
                   </thead>
                   <tbody>
-                    {ordenados.map((c) => {
+                    {ordenados.map((c, i) => {
                       const manual = c.modo === "manual";
+                      const sobrePiso = alturaSobrePisoM(c.y, poste.alturaM, poste.empotramientoCm);
                       return (
                         <tr
                           key={c.id}
                           onClick={() => setSeleccionadoId(c.id)}
+                          onMouseEnter={() => setResaltadoId(c.id)}
+                          onMouseLeave={() => setResaltadoId(null)}
                           style={{
                             cursor: "pointer",
                             background:
                               c.id === seleccionadoId
                                 ? "color-mix(in srgb, var(--color-accent) 12%, transparent)"
-                                : manual
-                                  ? "color-mix(in srgb, var(--color-accent) 6%, transparent)"
-                                  : undefined,
+                                : c.id === resaltadoId
+                                  ? "color-mix(in srgb, var(--color-text) 6%, transparent)"
+                                  : manual
+                                    ? "color-mix(in srgb, var(--color-accent) 6%, transparent)"
+                                    : undefined,
                           }}
                         >
+                          <td className="num text-muted" style={{ fontSize: 12 }}>
+                            {i + 1}
+                          </td>
                           <td>
                             <Icono codigo={c.componente_visual_codigo} manual={manual} />
                           </td>
@@ -394,6 +437,9 @@ export default function ModalPoste({
                               <InputPosicion valor={c.x} etiqueta={`${c.componente_visual.nombre}, x`} disabled={ocupado} onCambiar={(x) => void mover(c, { x })} />
                               <InputPosicion valor={c.y} etiqueta={`${c.componente_visual.nombre}, y`} disabled={ocupado} onCambiar={(y) => void mover(c, { y })} />
                             </div>
+                          </td>
+                          <td className="num text-muted" style={{ textAlign: "right", fontSize: 12.5 }}>
+                            {sobrePiso === null ? "—" : `${sobrePiso.toFixed(2)} m`}
                           </td>
                           <td>
                             <span className={`tag ${manual ? "tag-accent" : "tag-neutral"}`}>{manual ? "Manual" : "Automático"}</span>
