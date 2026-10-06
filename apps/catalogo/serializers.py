@@ -4,6 +4,7 @@ from rest_framework import serializers
 from apps.reglas.serializers import EstructuraMTResumenSerializer
 
 from .models import (
+    Conductor,
     ComponenteVisual,
     EstructuraCFE,
     EstructuraCFEMaterial,
@@ -67,3 +68,13 @@ class SlotAnclajeSerializer(serializers.ModelSerializer):
     class Meta:
         model = SlotAnclaje
         fields = ["id", "codigo", "nombre", "x_local", "y_local", "componentes_compatibles"]
+
+
+class ConductorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Conductor
+        fields = [
+            "id", "codigo", "nombre", "material", "calibre", "formacion", "seccion_mm2", "diametro_mm",
+            "peso_kg_m", "carga_ruptura_kg", "modulo_elasticidad_kg_mm2", "coef_dilatacion_c", "verificado",
+        ]
+

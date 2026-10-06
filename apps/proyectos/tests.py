@@ -2,7 +2,7 @@
 from django.core.management import call_command
 from rest_framework.test import APITestCase
 
-from apps.catalogo.models import EstructuraCFE
+from apps.catalogo.models import Conductor, EstructuraCFE
 
 from .models import Poste, PosteComponente, Tramo
 
@@ -325,3 +325,58 @@ class ValidacionesProyectoTests(APITestCase):
     def test_tramo_con_un_solo_poste_esta_incompleto(self):
         proyecto = self._proyecto_con_postes([(-106.0, 28.6)], ["RD3N"])
         self.assertIn("tramo_incompleto", self._codigos(self._validar(proyecto)))
+
+
+class ConductorYFlechaTests(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_catalogo_visual", verbosity=0)
+        call_command("cargar_reglas_cfe", verbosity=0)
+        call_command("seed_conductores", verbosity=0)
+
+    def _tramo_con_postes(self, longitudes_lng=(-106.0, -105.999, -105.998)):
+        proyecto = self.client.post("/api/proyectos/proyectos/", {"nombre": "Flecha"}, format="json").json()
+        tramo_id = proyecto["tramo_ids"][0]
+        estructura_id = EstructuraCFE.objects.get(codigo="TS3N").id
+        for lng in longitudes_lng:
+            self.client.post("/api/proyectos/postes/", _feature(tramo_id, estructura_id, lng, 28.6), format="json")
+        return tramo_id
+
+    def test_catalogo_de_conductores(self):
+        conductores = self.client.get("/api/catalogo/conductores/").json()
+        self.assertGreaterEqual(len(conductores), 5)
+        self.assertTrue(all(not c["verificado"] for c in conductores))
+
+    def test_sin_conductor_no_hay_flechas(self):
+        tramo_id = self._tramo_con_postes()
+        self.assertEqual(self.client.get(f"/api/proyectos/tramos/{tramo_id}/flechas/").status_code, 404)
+
+    def test_asignar_conductor_y_calcular_flechas(self):
+        tramo_id = self._tramo_con_postes()
+        linnet = Conductor.objects.get(codigo="acsr-336-4-linnet")
+        resp = self.client.patch(
+            f"/api/proyectos/tramos/{tramo_id}/", {"properties": {"conductor": linnet.id}}, format="json"
+        )
+        self.assertEqual(resp.status_code, 200, resp.content)
+
+        datos = self.client.get(f"/api/proyectos/tramos/{tramo_id}/flechas/").json()
+        self.assertEqual(datos["conductor"], "ACSR 336.4 Linnet")
+        self.assertEqual(len(datos["vanos"]), 2)
+        self.assertAlmostEqual(datos["tension_eds_kg"], 0.2 * 6396, places=0)
+        # En caliente el cable se afloja: menos tensión que en EDS y flecha mayor que la de EDS.
+        self.assertLess(datos["tension_kg"], datos["tension_eds_kg"])
+        vano = datos["vanos"][0]
+        flecha_eds = linnet.peso_kg_m * vano["distancia_m"] ** 2 / (8 * datos["tension_eds_kg"])
+        self.assertGreater(vano["flecha_m"], flecha_eds)
+
+    def test_generar_vanos_guarda_la_flecha(self):
+        tramo_id = self._tramo_con_postes()
+        Tramo.objects.filter(pk=tramo_id).update(conductor=Conductor.objects.get(codigo="acsr-1-0-raven"))
+        vanos = self.client.post(f"/api/proyectos/tramos/{tramo_id}/generar-vanos/").json()
+        self.assertTrue(all(v["flecha"] > 0 for v in vanos))
+
+    def test_validacion_avisa_tramo_sin_conductor(self):
+        tramo_id = self._tramo_con_postes()
+        proyecto_id = Tramo.objects.get(pk=tramo_id).proyecto_id
+        resultado = self.client.get(f"/api/proyectos/proyectos/{proyecto_id}/validaciones/").json()
+        self.assertIn("tramo_sin_conductor", {p["codigo"] for p in resultado["problemas"]})

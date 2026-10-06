@@ -2,6 +2,7 @@
 from django.contrib import admin
 
 from .models import (
+    Conductor,
     ComponenteVisual,
     EstructuraCFE,
     EstructuraCFEMaterial,
@@ -56,3 +57,11 @@ class SlotAnclajeAdmin(admin.ModelAdmin):
     list_display = ("nombre", "codigo", "x_local", "y_local")
     filter_horizontal = ("componentes_compatibles",)
     search_fields = ("nombre", "codigo")
+
+
+@admin.register(Conductor)
+class ConductorAdmin(admin.ModelAdmin):
+    list_display = ("nombre", "material", "seccion_mm2", "peso_kg_m", "carga_ruptura_kg", "verificado")
+    list_filter = ("material", "verificado")
+    search_fields = ("nombre", "codigo")
+

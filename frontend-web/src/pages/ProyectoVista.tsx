@@ -11,11 +11,13 @@ import {
   crearPoste,
   generarPostesDePaso,
   listarComponentesVisuales,
+  listarConductores,
   listarEstructuras,
   listarPrefijos,
   listarTramos,
   moverPoste,
   obtenerOpcionesPoste,
+  obtenerFlechas,
   obtenerProyecto,
   obtenerValidaciones,
 } from '../api/proyectos'
@@ -24,6 +26,7 @@ import ModalCoordenadas from '../components/ModalCoordenadas'
 import BarraProyecto from '../components/BarraProyecto'
 import MapaTramo, { BASES, type BaseMapa, type Herramienta } from '../components/MapaTramo'
 import ModalPoste from '../components/ModalPoste'
+import PanelFlechas from '../components/PanelFlechas'
 import PanelValidaciones from '../components/PanelValidaciones'
 import PanelPoste from '../components/PanelPoste'
 import SelectorEstructura from '../components/SelectorEstructura'
@@ -60,7 +63,7 @@ export default function ProyectoVista() {
     [id, proyecto.datos?.actualizado_en, tramos.datos?.map((t) => t.vano_maximo).join()],
   )
   const catalogo = useCargar(
-    () => Promise.all([listarEstructuras(), listarPrefijos(), obtenerOpcionesPoste(), listarComponentesVisuales()]),
+    () => Promise.all([listarEstructuras(), listarPrefijos(), obtenerOpcionesPoste(), listarComponentesVisuales(), listarConductores()]),
     [],
   )
 
@@ -68,6 +71,11 @@ export default function ProyectoVista() {
   const tramoId = tramoElegido ?? tramos.datos?.[0]?.id
   const tramo = tramos.datos?.find((t) => t.id === tramoId)
   const { postes, error: errorPostes, recargar } = useTramoConPostes(tramoId)
+  // Sin conductor, o con menos de 2 postes, no hay flechas que mostrar: el API responde 404 y se trata como "sin datos".
+  const flechas = useCargar(
+    () => (tramo?.conductor && tramoId !== undefined ? obtenerFlechas(tramoId).catch(() => null) : Promise.resolve(null)),
+    [tramoId, tramo?.conductor, tramo?.porcentaje_eds, tramo?.temperatura_maxima_c, proyecto.datos?.actualizado_en],
+  )
 
   const [seleccionadoId, setSeleccionadoId] = useState<number | null>(null)
   const [modalAbierto, setModalAbierto] = useState(false)
@@ -84,7 +92,7 @@ export default function ProyectoVista() {
   const [ocupado, setOcupado] = useState(false)
   const [aviso, setAviso] = useState<string | null>(null)
 
-  const [estructuras, prefijos, opciones, componentesVisuales] = catalogo.datos ?? [[], [], null, []]
+  const [estructuras, prefijos, opciones, componentesVisuales, conductores] = catalogo.datos ?? [[], [], null, [], []]
   const nuevaId = estructuraNuevaId ?? estructuraSugerida(estructuras)
   const pasoId = estructuraPasoId ?? estructuraSugerida(estructuras)
   const ordenados = useMemo(() => [...postes].sort((a, b) => a.orden - b.orden), [postes])
@@ -222,6 +230,21 @@ export default function ProyectoVista() {
       tramos.recargar()
       setVanoMaximo(null)
     })
+  }
+
+  const cambiarTramo = (cambios: Parameters<typeof actualizarTramo>[1]) => {
+    if (tramoId === undefined) return
+    void ejecutar(async () => {
+      await actualizarTramo(tramoId, cambios)
+      tramos.recargar()
+    })
+  }
+
+  /** Guarda un campo numérico del tramo al salir del input, solo si es válido y cambió. */
+  const guardarNumero = (campo: 'porcentaje_eds' | 'temperatura_maxima_c', valor: string, minimo: number, maximo: number) => {
+    const n = Number(valor)
+    if (valor.trim() === '' || !(n >= minimo && n <= maximo) || n === tramo?.[campo]) return
+    cambiarTramo({ [campo]: n })
   }
 
   const irAProblema = (problema: ProblemaValidacion) => {
@@ -368,6 +391,67 @@ export default function ProyectoVista() {
                 </span>
               </div>
             </div>
+          </div>
+
+          <hr className="hr" style={{ margin: '14px 16px' }} />
+
+          <div className="px-4">
+            <h6 style={{ margin: '0 0 8px' }}>Conductor</h6>
+            <select
+              aria-label="Conductor del tramo"
+              className="input"
+              disabled={ocupado}
+              value={tramo?.conductor ?? ''}
+              onChange={(e) => cambiarTramo({ conductor: e.target.value ? Number(e.target.value) : null })}
+            >
+              <option value="">Sin conductor</option>
+              {conductores.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.nombre}
+                  {c.verificado ? '' : ' (sin verificar)'}
+                </option>
+              ))}
+            </select>
+            {tramo?.conductor ? (
+              <div className="mt-2.5 flex gap-3">
+                <div className="field" style={{ margin: 0 }}>
+                  <label htmlFor="eds-pct">EDS (% ruptura)</label>
+                  <input
+                    id="eds-pct"
+                    key={tramo.porcentaje_eds}
+                    className="input num"
+                    type="number"
+                    min={5}
+                    max={50}
+                    step="any"
+                    style={{ width: 72 }}
+                    defaultValue={tramo.porcentaje_eds}
+                    onBlur={(e) => guardarNumero('porcentaje_eds', e.target.value, 5, 50)}
+                    onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
+                  />
+                </div>
+                <div className="field" style={{ margin: 0 }}>
+                  <label htmlFor="temp-max">Temp. máx. (°C)</label>
+                  <input
+                    id="temp-max"
+                    key={tramo.temperatura_maxima_c}
+                    className="input num"
+                    type="number"
+                    min={20}
+                    max={120}
+                    step="any"
+                    style={{ width: 72 }}
+                    defaultValue={tramo.temperatura_maxima_c}
+                    onBlur={(e) => guardarNumero('temperatura_maxima_c', e.target.value, 20, 120)}
+                    onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="text-muted" style={{ fontSize: 11.5, marginTop: 6 }}>
+                Necesario para calcular tensiones y flechas.
+              </div>
+            )}
           </div>
 
           <hr className="hr" style={{ margin: '14px 16px' }} />
@@ -529,6 +613,9 @@ export default function ProyectoVista() {
                       ))}
                     </tbody>
                   </table>
+                  <hr className="hr" style={{ margin: 0 }} />
+                  <h6 style={{ margin: 0 }}>Tensión y flecha</h6>
+                  <PanelFlechas flechas={flechas.datos} conductorAsignado={Boolean(tramo?.conductor)} />
                   <hr className="hr" style={{ margin: 0 }} />
                   <h6 style={{ margin: 0 }}>Revisión normativa</h6>
                   <PanelValidaciones resultado={validaciones.datos} error={validaciones.error} onIrAPoste={irAProblema} />

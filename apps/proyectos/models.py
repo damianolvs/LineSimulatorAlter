@@ -41,6 +41,17 @@ class Tramo(models.Model):
         default=109.0,
         help_text="Distancia máxima en metros entre postes consecutivos. Estándar CFE: 109 m, ajustable por proyecto."
     )
+    conductor = models.ForeignKey(
+        "catalogo.Conductor", null=True, blank=True, related_name="tramos", on_delete=models.PROTECT,
+        help_text="Conductor del tramo; sin él no se calculan flechas.",
+    )
+    porcentaje_eds = models.FloatField(
+        default=20.0,
+        help_text="Tensión de cada día (EDS) como % de la carga de ruptura, a la temperatura de referencia.",
+    )
+    temperatura_maxima_c = models.FloatField(
+        default=50.0, help_text="Temperatura del conductor con la que se calcula la flecha máxima.",
+    )
 
     class Meta:
         verbose_name = "Tramo"

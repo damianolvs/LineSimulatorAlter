@@ -19,6 +19,7 @@ from apps.reglas.services import desglose_estructura
 
 from .services import (
     agregar_postes_por_coordenadas,
+    calcular_flechas_tramo,
     generar_postes_de_paso,
     calcular_materiales_proyecto,
     generar_vanos,
@@ -77,6 +78,32 @@ class TramoViewSet(ModelViewSet):
         datos.is_valid(raise_exception=True)
         postes = agregar_postes_por_coordenadas(tramo, **datos.validated_data)
         return Response({"creados": len(postes), "ids": [p.id for p in postes]}, status=201)
+
+    @action(detail=True, methods=["get"])
+    def flechas(self, request, pk=None):
+        """Flecha y tensión por vano con el conductor del tramo, a su temperatura máxima de diseño."""
+        tramo = self.get_object()
+        calculo = calcular_flechas_tramo(tramo)
+        if calculo is None:
+            return Response(
+                {"detail": "El tramo necesita un conductor y al menos 2 postes separados para calcular flechas."},
+                status=404,
+            )
+        orden = list(tramo.postes.order_by("orden").values_list("orden", flat=True))
+        vanos = [
+            {"desde": a, "hasta": b, "distancia_m": d, "flecha_m": f}
+            for a, b, d, f in zip(orden, orden[1:], calculo["distancias_m"], calculo["flechas_m"])
+        ]
+        return Response({
+            "conductor": tramo.conductor.nombre,
+            "porcentaje_eds": tramo.porcentaje_eds,
+            "temperatura_maxima_c": tramo.temperatura_maxima_c,
+            "vano_regulador_m": calculo["vano_regulador_m"],
+            "tension_eds_kg": calculo["tension_eds_kg"],
+            "tension_kg": calculo["tension_kg"],
+            "flecha_maxima_m": max(calculo["flechas_m"]),
+            "vanos": vanos,
+        })
 
     @action(detail=True, methods=["post"], url_path="generar-vanos")
     def generar_vanos_action(self, request, pk=None):
