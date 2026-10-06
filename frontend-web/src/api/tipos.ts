@@ -33,6 +33,34 @@ export interface Tramo {
   proyecto: number;
   nombre: string;
   vano_maximo: number;
+  conductor: number | null;
+  porcentaje_eds: number;
+  temperatura_maxima_c: number;
+}
+
+export interface Conductor {
+  id: number;
+  codigo: string;
+  nombre: string;
+  material: string;
+  calibre: string;
+  formacion: string;
+  seccion_mm2: number;
+  diametro_mm: number;
+  peso_kg_m: number;
+  carga_ruptura_kg: number;
+  verificado: boolean;
+}
+
+export interface FlechasTramo {
+  conductor: string;
+  porcentaje_eds: number;
+  temperatura_maxima_c: number;
+  vano_regulador_m: number;
+  tension_eds_kg: number;
+  tension_kg: number;
+  flecha_maxima_m: number;
+  vanos: { desde: number; hasta: number; distancia_m: number; flecha_m: number }[];
 }
 
 export interface EstructuraMTResumen {

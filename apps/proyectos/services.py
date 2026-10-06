@@ -9,6 +9,8 @@ from pyproj import Transformer
 
 from apps.reglas.services import offset_desde_punta_m
 
+from .flecha import PropiedadesConductor, calcular_flechas
+
 _transformer_a_utm = Transformer.from_crs("EPSG:4326", "EPSG:32613", always_xy=True)
 _transformer_a_wgs84 = Transformer.from_crs("EPSG:32613", "EPSG:4326", always_xy=True)
 
@@ -46,6 +48,30 @@ def deflexion_entre(anterior, poste, siguiente):
     return math.degrees(math.acos(cos_theta))
 
 
+def calcular_flechas_tramo(tramo, distancias=None):
+    """
+    Flechas de los vanos del tramo con su conductor, a la temperatura máxima de diseño.
+    Devuelve None si el tramo no tiene conductor o no tiene vanos de longitud positiva.
+    """
+    conductor = tramo.conductor
+    if conductor is None:
+        return None
+    if distancias is None:
+        puntos = [_a_utm(p.geom) for p in tramo.postes.order_by("orden")]
+        distancias = [math.hypot(b[0] - a[0], b[1] - a[1]) for a, b in zip(puntos, puntos[1:])]
+    if not any(d > 0 for d in distancias):
+        return None
+    propiedades = PropiedadesConductor(
+        seccion_mm2=conductor.seccion_mm2, peso_kg_m=conductor.peso_kg_m,
+        carga_ruptura_kg=conductor.carga_ruptura_kg,
+        modulo_elasticidad_kg_mm2=conductor.modulo_elasticidad_kg_mm2,
+        coef_dilatacion_c=conductor.coef_dilatacion_c,
+    )
+    resultado = calcular_flechas(propiedades, distancias, tramo.porcentaje_eds, tramo.temperatura_maxima_c)
+    resultado["distancias_m"] = distancias
+    return resultado
+
+
 def generar_vanos(tramo):
     from .models import Vano
 
@@ -58,6 +84,11 @@ def generar_vanos(tramo):
         xs, ys = _a_utm(siguiente.geom)
         distancia = math.hypot(xs - xa, ys - ya)
         nuevos.append(Vano(poste_inicio=anterior, poste_fin=siguiente, distancia=distancia))
+
+    flechas = calcular_flechas_tramo(tramo, [v.distancia for v in nuevos])
+    if flechas:
+        for vano, flecha in zip(nuevos, flechas["flechas_m"]):
+            vano.flecha = flecha
 
     Vano.objects.bulk_create(nuevos)
     return nuevos

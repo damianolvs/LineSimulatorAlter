@@ -53,7 +53,7 @@ class TramoSerializer(GeoFeatureModelSerializer):
         model = Tramo
         geo_field = "geom"
         id_field = False  # deja `id` dentro de `properties`, como lo lee el frontend
-        fields = ["id", "proyecto", "nombre", "vano_maximo"]
+        fields = ["id", "proyecto", "nombre", "vano_maximo", "conductor", "porcentaje_eds", "temperatura_maxima_c"]
 
 
 class PosteModuloSerializer(serializers.ModelSerializer):

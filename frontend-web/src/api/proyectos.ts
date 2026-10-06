@@ -2,6 +2,8 @@
 import { api } from "./cliente";
 import type {
   ComponenteVisual,
+  Conductor,
+  FlechasTramo,
   DatosPoste,
   DesglosePoste,
   EstructuraCFE,
@@ -51,7 +53,14 @@ export const obtenerMateriales = (proyectoId: number | string) =>
 export const obtenerValidaciones = (proyectoId: number | string) =>
   api<ResultadoValidacion>(`/api/proyectos/proyectos/${proyectoId}/validaciones/`);
 
-export const actualizarTramo = (id: number, cambios: { vano_maximo: number }) =>
+export const listarConductores = () => api<Conductor[]>("/api/catalogo/conductores/");
+/** Flechas del tramo; responde 404 (error) si aún no tiene conductor o vanos. */
+export const obtenerFlechas = (tramoId: number) => api<FlechasTramo>(`/api/proyectos/tramos/${tramoId}/flechas/`);
+
+export const actualizarTramo = (
+  id: number,
+  cambios: Partial<{ vano_maximo: number; conductor: number | null; porcentaje_eds: number; temperatura_maxima_c: number }>,
+) =>
   api<unknown>(`/api/proyectos/tramos/${id}/`, { method: "PATCH", json: { properties: cambios } });
 
 /** El listado de tramos viene como FeatureCollection; aquí solo interesan sus propiedades. */

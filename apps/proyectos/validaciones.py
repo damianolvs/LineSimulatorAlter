@@ -75,6 +75,11 @@ def validar_proyecto(proyecto) -> dict:
                 ADVERTENCIA, "tramo_incompleto",
                 f"{tramo}: necesita al menos 2 postes para formar una línea.", tramo=tramo,
             ))
+        if tramo.conductor_id is None:
+            problemas.append(_problema(
+                INFO, "tramo_sin_conductor",
+                f"{tramo}: sin conductor asignado, no se pueden calcular flechas ni tensiones.", tramo=tramo,
+            ))
         ultimo = len(postes) - 1
 
         for i, poste in enumerate(postes):

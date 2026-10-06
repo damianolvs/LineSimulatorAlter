@@ -186,3 +186,37 @@ class SlotAnclaje(models.Model):
 
     def __str__(self):
         return self.nombre
+
+
+class Conductor(models.Model):
+    """Conductor de línea aérea con las propiedades que necesita el cálculo de flecha y tensión."""
+
+    class Material(models.TextChoices):
+        ACSR = "ACSR", "ACSR (aluminio con alma de acero)"
+        AAC = "AAC", "AAC (aluminio)"
+        AAAC = "AAAC", "AAAC (aleación de aluminio)"
+        COBRE = "CU", "Cobre"
+
+    codigo = models.SlugField(max_length=30, unique=True)
+    nombre = models.CharField(max_length=100, help_text="Ej. 'ACSR 336.4 Linnet'.")
+    material = models.CharField(max_length=5, choices=Material.choices, default=Material.ACSR)
+    calibre = models.CharField(max_length=20, blank=True, help_text="Ej. '336.4 kcmil', '1/0 AWG'.")
+    formacion = models.CharField(max_length=20, blank=True, help_text="Hilos aluminio/acero, ej. '26/7'.")
+    seccion_mm2 = models.FloatField(help_text="Sección transversal total.")
+    diametro_mm = models.FloatField()
+    peso_kg_m = models.FloatField(help_text="Peso propio por metro.")
+    carga_ruptura_kg = models.FloatField(help_text="Carga de ruptura nominal (RBS).")
+    modulo_elasticidad_kg_mm2 = models.FloatField(help_text="Módulo de elasticidad final del cable completo.")
+    coef_dilatacion_c = models.FloatField(help_text="Coeficiente de dilatación térmica lineal, 1/°C.")
+    verificado = models.BooleanField(
+        default=False, help_text="True si un técnico confirmó los valores contra la ficha del fabricante o CFE."
+    )
+
+    class Meta:
+        verbose_name = "Conductor"
+        verbose_name_plural = "Conductores"
+        ordering = ["seccion_mm2", "codigo"]
+
+    def __str__(self):
+        return self.nombre
+

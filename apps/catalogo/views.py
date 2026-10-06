@@ -1,9 +1,10 @@
 # apps/catalogo/views.py
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from .models import ComponenteVisual, EstructuraCFE, Material, Modulo, SlotAnclaje
+from .models import ComponenteVisual, Conductor, EstructuraCFE, Material, Modulo, SlotAnclaje
 from .serializers import (
     ComponenteVisualSerializer,
+    ConductorSerializer,
     EstructuraCFESerializer,
     MaterialSerializer,
     ModuloSerializer,
@@ -34,3 +35,9 @@ class ComponenteVisualViewSet(ReadOnlyModelViewSet):
 class SlotAnclajeViewSet(ReadOnlyModelViewSet):
     queryset = SlotAnclaje.objects.prefetch_related("componentes_compatibles")
     serializer_class = SlotAnclajeSerializer
+
+
+class ConductorViewSet(ReadOnlyModelViewSet):
+    queryset = Conductor.objects.all()
+    serializer_class = ConductorSerializer
+
