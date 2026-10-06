@@ -117,6 +117,22 @@ export interface Vano {
   distancia: number;
 }
 
+export type SeveridadValidacion = "error" | "advertencia" | "info";
+
+export interface ProblemaValidacion {
+  severidad: SeveridadValidacion;
+  codigo: string;
+  mensaje: string;
+  tramo_id: number | null;
+  poste_id: number | null;
+  orden: number | null;
+}
+
+export interface ResultadoValidacion {
+  resumen: { errores: number; advertencias: number; info: number };
+  problemas: ProblemaValidacion[];
+}
+
 export interface ListaMateriales {
   resumen: {
     num_postes: number;

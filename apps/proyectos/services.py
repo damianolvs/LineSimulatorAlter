@@ -24,6 +24,11 @@ def calcular_angulo_deflexion(poste):
     if anterior is None or siguiente is None:
         return None
 
+    return deflexion_entre(anterior, poste, siguiente)
+
+
+def deflexion_entre(anterior, poste, siguiente):
+    """Ángulo de deflexión (grados) en `poste` dados sus vecinos; None si hay puntos coincidentes."""
     xa, ya = _a_utm(anterior.geom)
     xp, yp = _a_utm(poste.geom)
     xs, ys = _a_utm(siguiente.geom)

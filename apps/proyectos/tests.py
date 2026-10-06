@@ -241,3 +241,87 @@ class FlujoProyectoTests(APITestCase):
         paso.refresh_from_db()
         self.assertFalse(paso.es_ancla)
 
+
+
+class ValidacionesProyectoTests(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_catalogo_visual", verbosity=0)
+        call_command("cargar_reglas_cfe", verbosity=0)
+
+    def _proyecto_con_postes(self, puntos, estructuras, **extra):
+        proyecto = self.client.post(
+            "/api/proyectos/proyectos/", {"nombre": "Validación", **extra}, format="json"
+        ).json()
+        tramo_id = proyecto["tramo_ids"][0]
+        for (lng, lat), codigo in zip(puntos, estructuras):
+            estructura = EstructuraCFE.objects.get(codigo=codigo)
+            resp = self.client.post(
+                "/api/proyectos/postes/", _feature(tramo_id, estructura.id, lng, lat, es_ancla=True), format="json"
+            )
+            self.assertEqual(resp.status_code, 201, resp.content)
+        return proyecto
+
+    def _validar(self, proyecto):
+        resp = self.client.get(f"/api/proyectos/proyectos/{proyecto['id']}/validaciones/")
+        self.assertEqual(resp.status_code, 200, resp.content)
+        return resp.json()
+
+    @staticmethod
+    def _codigos(resultado):
+        return {p["codigo"] for p in resultado["problemas"]}
+
+    def test_linea_correcta_no_tiene_errores_ni_advertencias(self):
+        proyecto = self._proyecto_con_postes(
+            [(-106.0, 28.6), (-105.9995, 28.6), (-105.999, 28.6)], ["RD3N", "TS3N", "RD3N"]
+        )
+        resultado = self._validar(proyecto)
+        self.assertEqual(resultado["resumen"]["errores"], 0)
+        self.assertEqual(resultado["resumen"]["advertencias"], 0)
+
+    def test_vano_mayor_al_maximo_del_tramo(self):
+        proyecto = self._proyecto_con_postes([(-106.0, 28.6), (-105.99, 28.6)], ["RD3N", "RD3N"], vano_maximo=100)
+        self.assertIn("vano_excede_maximo", self._codigos(self._validar(proyecto)))
+
+    def test_postes_duplicados_son_error(self):
+        proyecto = self._proyecto_con_postes([(-106.0, 28.6), (-106.0, 28.6)], ["RD3N", "RD3N"])
+        resultado = self._validar(proyecto)
+        self.assertGreaterEqual(resultado["resumen"]["errores"], 1)
+        self.assertIn("postes_muy_cercanos", self._codigos(resultado))
+
+    def test_deflexion_fuerte_con_estructura_de_paso_simple(self):
+        # Giro de ~90° en el poste 2 con una estructura tangente.
+        proyecto = self._proyecto_con_postes(
+            [(-106.0, 28.6), (-105.9995, 28.6), (-105.9995, 28.6005)], ["RD3N", "TS3N", "RD3N"]
+        )
+        problema = next(p for p in self._validar(proyecto)["problemas"] if p["codigo"] == "deflexion_excede_categoria")
+        self.assertEqual(problema["orden"], 2)
+
+    def test_deflexion_fuera_del_rango_capturado_es_error(self):
+        proyecto = self._proyecto_con_postes(
+            [(-106.0, 28.6), (-105.9995, 28.6), (-105.9995, 28.6005)], ["RD3N", "TS3N", "RD3N"]
+        )
+        ts3n = EstructuraCFE.objects.get(codigo="TS3N").estructura_mt
+        ts3n.angulo_min, ts3n.angulo_max = 0, 10
+        ts3n.save()
+        resultado = self._validar(proyecto)
+        self.assertIn("deflexion_fuera_de_rango", self._codigos(resultado))
+        self.assertGreaterEqual(resultado["resumen"]["errores"], 1)
+
+    def test_remate_en_medio_de_la_linea(self):
+        proyecto = self._proyecto_con_postes(
+            [(-106.0, 28.6), (-105.9995, 28.6), (-105.999, 28.6)], ["RD3N", "RD3N", "RD3N"]
+        )
+        problema = next(p for p in self._validar(proyecto)["problemas"] if p["codigo"] == "remate_intermedio")
+        self.assertEqual(problema["orden"], 2)
+
+    def test_extremo_sin_remate_e_info_de_estructura_sin_reglas(self):
+        EstructuraCFE.objects.create(codigo="sin-reglas", nombre="Sin reglas")
+        proyecto = self._proyecto_con_postes([(-106.0, 28.6), (-105.9995, 28.6)], ["TS3N", "sin-reglas"])
+        codigos = self._codigos(self._validar(proyecto))
+        self.assertIn("extremo_sin_remate", codigos)
+        self.assertIn("estructura_sin_reglas", codigos)
+
+    def test_tramo_con_un_solo_poste_esta_incompleto(self):
+        proyecto = self._proyecto_con_postes([(-106.0, 28.6)], ["RD3N"])
+        self.assertIn("tramo_incompleto", self._codigos(self._validar(proyecto)))

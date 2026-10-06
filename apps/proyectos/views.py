@@ -25,6 +25,7 @@ from .services import (
     resolver_layout_poste,
     sincronizar_geom_tramo,
 )
+from .validaciones import validar_proyecto
 
 
 class ProyectoViewSet(ModelViewSet):
@@ -35,6 +36,11 @@ class ProyectoViewSet(ModelViewSet):
     def materiales(self, request, pk=None):
         """Lista de materiales del proyecto según las reglas normativas de cada estructura."""
         return Response(calcular_materiales_proyecto(self.get_object()))
+
+    @action(detail=True, methods=["get"])
+    def validaciones(self, request, pk=None):
+        """Revisión del diseño contra la normativa: vanos, deflexiones, remates y empotramientos."""
+        return Response(validar_proyecto(self.get_object()))
 
 
 class TramoViewSet(ModelViewSet):

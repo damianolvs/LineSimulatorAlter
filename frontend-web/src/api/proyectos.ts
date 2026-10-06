@@ -7,6 +7,7 @@ import type {
   EstructuraCFE,
   EstructuraNormativa,
   RevisionEstructura,
+  ResultadoValidacion,
   ListaMateriales,
   MaterialCatalogo,
   NuevoProyecto,
@@ -46,6 +47,9 @@ export const actualizarProyecto = (id: number, cambios: Partial<Pick<Proyecto, "
   api<Proyecto>(`/api/proyectos/proyectos/${id}/`, { method: "PATCH", json: cambios });
 export const obtenerMateriales = (proyectoId: number | string) =>
   api<ListaMateriales>(`/api/proyectos/proyectos/${proyectoId}/materiales/`);
+
+export const obtenerValidaciones = (proyectoId: number | string) =>
+  api<ResultadoValidacion>(`/api/proyectos/proyectos/${proyectoId}/validaciones/`);
 
 export const actualizarTramo = (id: number, cambios: { vano_maximo: number }) =>
   api<unknown>(`/api/proyectos/tramos/${id}/`, { method: "PATCH", json: { properties: cambios } });

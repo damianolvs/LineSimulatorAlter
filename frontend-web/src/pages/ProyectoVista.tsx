@@ -17,12 +17,14 @@ import {
   moverPoste,
   obtenerOpcionesPoste,
   obtenerProyecto,
+  obtenerValidaciones,
 } from '../api/proyectos'
-import type { DatosPoste, EstadoProyecto, EstructuraCFE } from '../api/tipos'
+import type { DatosPoste, EstadoProyecto, EstructuraCFE, ProblemaValidacion } from '../api/tipos'
 import ModalCoordenadas from '../components/ModalCoordenadas'
 import BarraProyecto from '../components/BarraProyecto'
 import MapaTramo, { BASES, type BaseMapa, type Herramienta } from '../components/MapaTramo'
 import ModalPoste from '../components/ModalPoste'
+import PanelValidaciones from '../components/PanelValidaciones'
 import PanelPoste from '../components/PanelPoste'
 import SelectorEstructura from '../components/SelectorEstructura'
 import { useCargar } from '../hooks/useCargar'
@@ -52,6 +54,11 @@ export default function ProyectoVista() {
   const { id } = useParams()
   const proyecto = useCargar(() => obtenerProyecto(id!), [id])
   const tramos = useCargar(() => listarTramos(id!), [id])
+  // La revisión se repite cuando cambia el proyecto (cada edición de postes lo actualiza) o el vano máximo.
+  const validaciones = useCargar(
+    () => obtenerValidaciones(id!),
+    [id, proyecto.datos?.actualizado_en, tramos.datos?.map((t) => t.vano_maximo).join()],
+  )
   const catalogo = useCargar(
     () => Promise.all([listarEstructuras(), listarPrefijos(), obtenerOpcionesPoste(), listarComponentesVisuales()]),
     [],
@@ -215,6 +222,14 @@ export default function ProyectoVista() {
       tramos.recargar()
       setVanoMaximo(null)
     })
+  }
+
+  const irAProblema = (problema: ProblemaValidacion) => {
+    if (problema.tramo_id !== null && problema.tramo_id !== tramoId) setTramoElegido(problema.tramo_id)
+    setSeleccionadoId(problema.poste_id)
+    setHerramienta('seleccionar')
+    const poste = ordenados.find((p) => p.id === problema.poste_id)
+    if (poste) setEnfoque({ clave: Date.now(), puntos: [poste.posicion] })
   }
 
   const cambiarEstado = (estado: EstadoProyecto) => {
@@ -514,6 +529,9 @@ export default function ProyectoVista() {
                       ))}
                     </tbody>
                   </table>
+                  <hr className="hr" style={{ margin: 0 }} />
+                  <h6 style={{ margin: 0 }}>Revisión normativa</h6>
+                  <PanelValidaciones resultado={validaciones.datos} error={validaciones.error} onIrAPoste={irAProblema} />
                   <p className="text-muted" style={{ fontSize: 12.5, margin: 0 }}>
                     Selecciona un poste en el mapa para editarlo. Con dos o más anclas puedes generar los postes de paso.
                   </p>
